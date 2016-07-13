@@ -1,0 +1,47 @@
+#!/bin/sh
+
+TREE=`jpwdroot`
+BUILD=`ls -l $TREE/build 2> /dev/null | sed -e 's%.*/build\.\([^/]*\).*%\1%'`
+build=`echo $BUILD | tr A-Z a-z`
+AUTOTEST_BUILD=$TREE/build.$BUILD/pkg/autotest
+AUTOTEST=$TREE/pkg/autotest
+ENV=$HOME/project/tools/qa/bat/env
+env_conf=`ls $ENV/env.conf.$build 2> /dev/null`
+factory=rg_factory
+image=openrg.img
+is_image=`ls -la /tftpboot | grep $image 2> /dev/null`
+is_factory=`ls -la /tftpboot | grep $factory 2> /dev/null`
+
+if [ "$env_conf" == "" ]; then
+  part1=${build:0:3}
+  part2=${build:4:2}
+  if [ "$part2" == "" ]; then
+    env_conf=`ls $ENV/env.conf.$part1* 2> /dev/null`
+  else
+    env_conf=`ls $ENV/env.conf.$part1*$part2* 2> /dev/null`
+  fi
+fi
+  ENV_CONF=$env_conf
+
+if [ "$is_image" == "" ]; then
+  echo could not find image! tried: image=ls \tftpboot \| grep $image
+  exit 1
+fi
+
+if [ "$is_factory" == "" ]; then
+  echo could not find factory settings! tried: factory=ls \tftpboot \| grep $factory, using blank.
+  factory=
+else
+  factory="-f -y $factory"
+fi
+
+printf "\nrm -f $AUTOTEST_BUILD/tools/sync_rgload && cake -C $AUTOTEST\n"
+rm -f $AUTOTEST_BUILD/tools/sync_rgload && cake -C $AUTOTEST
+
+printf "\nrt $AUTOTEST_BUILD/tools/sync_rgload -s $AUTOTEST/rgload_serial -e $ENV/env.conf.bat_sync_basic,$ENV_CONF -i $image $factory -S $AUTOTEST_BUILD/util/sync_serial_agent\n\n"
+
+rt $AUTOTEST_BUILD/tools/sync_rgload -s $AUTOTEST/rgload_serial -e $ENV/env.conf.bat_sync_basic,$ENV_CONF -i $image $factory -S $AUTOTEST_BUILD/util/sync_serial_agent
+
+
+
+

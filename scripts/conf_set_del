@@ -1,0 +1,8 @@
+echo "conf set royi 1" > /dev/ttyS0;
+sleep 1;
+echo "conf reconf 1" > /dev/ttyS0;
+sleep 1;
+echo "conf del royi" > /dev/ttyS0;
+sleep 1;
+echo "conf reconf 1" > /dev/ttyS0;
+sleep 1;

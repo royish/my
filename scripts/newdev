@@ -1,0 +1,6 @@
+cd
+rt rm -rf dev.rg
+cvs co -d dev.rg rg-dev
+cd dev.rg
+cat ~/my/scripts/config_list | xargs -l mkall
+

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+D=`jpwdroot`
+if [ -z "$1" ]; then
+    printf "error\n"
+    exit -1
+fi
+
+path=$1
+
+replace_link() {
+  if [ "`ls -l $path/$1 2> /dev/null`" != "" ]; then
+    unlink $1
+    ln -sf $path/$1
+    ls --color=auto -la $1
+  fi
+
+  return 0
+}
+
+cd /tftpboot
+
+replace_link openrg
+replace_link openrg.img
+replace_link openrg.rmt
+replace_link openrg.rms
+replace_link rg_factory
+replace_link image.elf
+replace_link vmlinux
+
+if [ "`ls -l /tftpboot/$path/openrg.rmt /var/www/openrg.rmt 2> /dev/null`" != "" ]; then
+  rt unlink /var/www/openrg.rmt 
+  rt ln -sf /tftpboot/$path/openrg.rmt /var/www/openrg.rmt
+  ls --color=auto -la /var/www/openrg.rmt
+fi
+if [ "`ls -l /tftpboot/$path/openrg.rms /var/www/openrg.rms 2> /dev/null`" != "" ]; then
+  rt unlink /var/www/openrg.rms 
+  rt ln -sf /tftpboot/$path/openrg.rms /var/www/openrg.rms
+  ls --color=auto -la /var/www/openrg.rms
+fi
+
+cd $D
+jstrip /tftpboot/$path/openrg

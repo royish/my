@@ -1,0 +1,6 @@
+rt mkdir -p /dev/pty
+rt chown royi /dev/pty
+ln -s /dev/ttyaa /dev/pty/s186
+ln -s /dev/ttyab /dev/pty/s187
+
+minicom -o -p /dev/pty/s186

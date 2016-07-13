@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# fast make
+# usage example: fake firewall main
+
+. /usr/local/bin/jtools_functions.sh
+rt rm -f build/pkg/build/disk_image/ramdisk_dir/dev/*
+mkdir build/pkg/build/disk_image/ramdisk_mount_point
+
+for i in $*; do
+    cdr "pkg/"$i && sake && sake ramdisk
+    #@@@sake -C "pkg/$i"
+    if [ "$?" -ne "0" ]; then
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in pkg/$i"
+	beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+	exit -1
+    fi
+    #@@@sake -C "pkg/$i" ramdisk
+    #@@@if [ "$?" -ne "0" ]; then
+    #@@@    echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: ramdisk error in pkg/$i"
+    #@@@    beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+    #@@@    exit -1
+    #@@@fi
+done
+
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: (pkg/build ramdisk) && os"
+#@@@sake -C pkg/build ramdisk && sake -C os
+cdr pkg/build
+sake ramdisk && cdr os && sake
+
+if (($PIPESTATUS)); then
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in " `pwd`
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: ramdisk && os"
+    beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+else
+    beep -f1000 -l120 -n -f1400 -l120 -n -f1200 -l120 -n -f1600 -l120 -n -f1800
+    cp -fv build/openrg.img /tftpboot
+fi

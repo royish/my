@@ -1,0 +1,6 @@
+#!/bin/bash
+
+CFG=`echo $1 | sed -e 's/^CONFIG_//'`
+CFG="config $CFG"
+
+find . -name "*Kconfig*" | xargs grep -A 4 -n "$CFG" | hil $CFG

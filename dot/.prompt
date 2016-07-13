@@ -1,0 +1,54 @@
+NORMAL="\[\033[00m\]"
+BLACK='\[\033[00;30m\]'
+RED="\[\033[01;31m\]"
+GREEN="\[\033[01;32m\]"
+YELLOW="\[\033[01;33m\]"
+BLUE="\[\033[01;34m\]"
+MAGENTA="\[\033[01;35m\]"
+PURPLE="\[\033[00;35m\]"
+CYAN="\[\033[01;36m\]"
+WHITE="\[\033[01;37m\]"
+GREY="\[\033[00;37m\]"
+BROWN="\[\033[00;33m\]"
+
+#the tab text color can be changed with the code 
+#\e[28;COLORt (COLOR: 0-16,777,215)
+
+#the code \e[8;ROW;COLUMNt will resize Konsole
+
+TESTER="\[\033[01;35m\]"
+#TESTER="\[\033[05;35m\]" blinking
+#TESTER="\[\033[04;35m\]" underlined
+
+# color_name='\[\033[ color_code m\]'
+
+if [ `/usr/bin/whoami` = 'root' ]
+then
+    if [ "$SHELL" = '/bin/bash' ] || [ "$SHELL" = '/bin/sh' ]
+    then
+	export PS1="$rgb_red\h $rgb_restore\W # $NORMAL"
+    fi
+else
+    if [ "$SHELL" = '/bin/bash' ] || [ "$SHELL" = '/bin/sh' ]
+    then
+#	export PS1="$CYAN\u@\h \w>$NORMAL \[\e]30;\w\a"
+#	export PS1="$GREEN\u@\h $CYAN\w>$NORMAL \[\e]30;\w\a"
+#	export PS1="$BLACK\u@\h $BLUE\w>$NORMAL \[\e]30;\w\a"
+#	export PS1="$NORMAL\u@\h $BLUE\w>$NORMAL "
+	export PS1="$CYAN\u@\h $BLUE\w>$NORMAL "
+    else
+	export PS1="$NORMAL\u@\h \w> "
+    fi
+fi
+#
+#if [ -d $HOME/bin ];
+#then
+#    export PATH=$PATH:$HOME/bin
+#fi
+# vim: ft=sh
+#	export PS1="$GREEN\u@\h $CYAN\W> $NORMAL"
+#	export PS1="$rgb_cyan\u@\h $rgb_yellow\w>$rgb_green \[\e]30;\W\a"
+#	export PS1="$rgb_cyan\u@\h $rgb_yellow\w>$rgb_restore \[\e]30;\W\a"
+#	export PS1="$rgb_blue\u@\h $rgb_magenta\W \$ $NORMAL"
+
+

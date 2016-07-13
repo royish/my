@@ -1,0 +1,5 @@
+MACAddress="00:11:22:33:44:55"
+UA="asdl;kasdlkas;dlkasd"
+SET_CMD="'{\"mac-address\":"$MACAddress",\"http-user-agent\":\""$UA"\"}'"
+
+echo $SET_CMD

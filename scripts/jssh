@@ -1,0 +1,40 @@
+#!/usr/bin/expect -f
+set timeout 6
+
+set user [lindex $argv 0]
+set cmd [lindex $argv 1]
+spawn ssh -X $user@$user
+
+expect {
+  "> " { }
+  "$ " { }
+  "assword: " { 
+        send "jnjnuh\n" 
+	expect {
+	  "> " { }
+	  "$ " { }
+	}
+  }
+  "(yes/no)? " { 
+        send "yes\n"
+        expect {
+	  "assword: " { 
+		send "jnjnuh\n" 
+		    expect {
+			"> " { }
+			"$ " { }
+		    }
+	  }
+        }
+  }
+  default {
+        send_user "Login failed\n"
+        exit
+  }
+}
+
+if { $cmd ne "" } {
+    send "$cmd\n"
+}
+
+interact

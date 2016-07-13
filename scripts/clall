@@ -1,0 +1,11 @@
+#!/bin/bash
+. /usr/local/bin/jtools_functions.sh
+
+cdr && cake config $@ && cake | tee build/compilation
+x=$PIPESTATUS
+touch build/.compile_date
+echo `date` | tee build/.compile_date
+
+if (($x)); then
+  tail -n 100 build/compilation > build/failure
+fi

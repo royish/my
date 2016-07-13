@@ -1,0 +1,43 @@
+#!/bin/sh
+
+TEMP_FILE=/tmp/old_reviews
+CVS_CMD="cvs -d ":pserver:$USER@cvs:/arch/cvs" co -p"
+REV1_FILE=/tmp/rev1
+REV2_FILE=/tmp/rev2
+INFO_FILE=/tmp/info
+FOUND=0
+#REVIEWS=`mysql -h mysql -u anonymous jdoc -e "SELECT CONCAT('R', id) AS id,
+#    REPLACE(title, '\\n', ' ') AS title, author, pending, from_who AS 'from',
+#    (TO_DAYS(CURRENT_DATE) - TO_DAYS(updated)) AS days, status, lines_count AS
+#    ln, author = '$USER' as 'in' FROM jdoc.reviews WHERE pending = '$USER' 
+#    ORDER BY days" | grep -oE "R[0-9]+"`
+REVIEWS=`review data | grep -oE "R[0-9]+"`
+
+# Exit if query failed
+if [ $? != 0 ]; then
+  exit $?
+fi
+
+# Create temp file is doesn't exist
+[ ! -d $TEMP_FILE ] && touch $TEMP_FILE
+
+for r in $REVIEWS; do
+    # If review wasn't already notified about
+    if [ -z "`grep $r $TEMP_FILE`" ]; then
+	[ $FOUND == 0 ] && echo "You've received new review(s):"
+	echo
+	echo "http://bugs.home.jungo.com/jurl.cgi?q=$r"
+	REVIEW_FILE=review/`echo $r | grep -oE "[0-9][0-9]$"`/$r
+	$CVS_CMD $REVIEW_FILE 1>$REV2_FILE 2>$INFO_FILE
+	VER=`cat $INFO_FILE | grep "VERS" | grep -oE "[0-9]+$"`
+	VER=$(($VER - 1))
+	$CVS_CMD -r 1.$VER $REVIEW_FILE 1>$REV1_FILE 2>$INFO_FILE
+        diff -U "-1" $REV1_FILE $REV2_FILE 2>/dev/null | tail -n "+4"
+        #diff -y $REV1_FILE $REV2_FILE 2>/dev/null
+	FOUND=1
+    fi
+done
+
+# Save notified reviews
+echo $REVIEWS > $TEMP_FILE
+#rm -f $REV1_FILE $REV2_FILE $INFO_FILE

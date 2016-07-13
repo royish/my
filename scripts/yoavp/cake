@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#SIZE=`/bin/stty size`
+SIZE=-1
+make $* 2>&1 | ~/scripts/colormake.pl $SIZE
+x=$PIPESTATUS
+fin $x
+exit $x

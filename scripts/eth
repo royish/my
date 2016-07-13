@@ -1,0 +1,10 @@
+#!/bin/sh
+
+rt ifconfig eth0 down
+rt ifconfig eth1 down
+rt killall dhclient
+sleep 1
+rt dhclient eth$1
+
+rt ifconfig
+

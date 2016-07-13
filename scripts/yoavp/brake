@@ -1,0 +1,8 @@
+#!/bin/sh
+
+rm -f build/os/linux/linux
+rm -f build/os/linux/vmlinux
+cake && cp -fv build/openrg.img /tftpboot/$1 \
+  && cp -fv build/pkg/kernel/linux/boot/image.elf /tftpboot || exit
+
+jpwr reset

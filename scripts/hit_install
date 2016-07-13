@@ -1,0 +1,29 @@
+mkdir ~/hit_bsp
+cd ~/hit_bsp/
+cp /net/fs/arch/rg/customers/tvcabo/projects/docsis3_bvw3653-2/rnd/from_hitron/SDK/10\:06\:10/* . -R
+mkdir ti
+cd ti/
+cp /net/fs/arch/rg/customers/ti/docsis_3.0/D3_0VSDK_1_1_2_46_PreRelease/src/* .
+sh installpkg *.tgz
+okular ../ChangeNote.pdf &
+mv ../HT_Patch_Files .
+mv ../cpPatchFiles_11246.sh .
+sh cpPatchFiles_11246.sh 
+mv ../hitron .
+mv ../TI_Originals_Files/ .
+export PATH=/usr/local/openrg/armv6b-montavista-linux-uclibceabi/bin/:$PATH
+make BVW3653-patch
+
+#move 
+##include "zconf.hash.c"
+#to line 183
+
+g ./tools/src/kconfig/zconf.tab.c
+
+#chage line 389 to 
+#	char filelist[1024 + 1];
+g ./kernel/ti/linux-2.6.18/src/scripts/mod/sumversion.c:389
+make defconfig PRODUCT=VSDK
+make BVW3653
+cp -vf build/vsdk/images/vsdk-1.1.2.46-<date> /tftpboot/vsdk.img
+

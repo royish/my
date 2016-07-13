@@ -1,0 +1,16 @@
+ARG=$1
+
+#HASH=`echo $ARG | sed 's/.*\(..\)/\1/'`
+#NO_R=`echo $ARG | sed 's/R//'`
+
+HASH=${ARG:$((-2)):2}
+if [[ "${ARG:0:1}" == "R" ]] ; then
+  NO_R=${ARG:1:10}
+else
+  NO_R=$ARG
+fi
+
+cd ~/stuff/revs
+cvs -q up $HASH/R$NO_R || cvs co -d $HASH review/$HASH/R$NO_R
+cd - > /dev/null
+g ~/stuff/revs/$HASH/R$NO_R

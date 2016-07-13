@@ -1,0 +1,20 @@
+#!/bin/sh
+
+rdiff.sh $1
+printf "command:\n"
+printf "rev ci new \`cat $1.list\`\n"
+printf "Should I Commit? [y/N] "
+read cont
+if [ $cont == "y" ]; then
+  printf "\n=============\n\n"
+  printf "Copy this:\n"
+  printf "$2\n\n"
+  review ci new `cat $1.list`
+  printf "\n=============\n"
+else
+  printf "not patching...\n"
+  exit 1
+fi
+
+
+

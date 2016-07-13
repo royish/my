@@ -1,0 +1,3 @@
+f=`which $*`
+cd `dirname $f`
+gvim $f

@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# fast make openrg
+
+for i in $*; do
+    sake -C "pkg/$i"
+    if [ "$?" -ne "0" ]; then
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in pkg/$i"
+	#beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+	exit -1
+    fi
+done
+
+sake -C pkg/main
+if [ "$?" -ne "0" ]; then
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in pkg/main"
+    #beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+    exit -1
+fi
+
+#beep -f1000 -l120 -n -f1400 -l120 -n -f1200 -l120 -n -f1600 -l120 -n -f1800
+cp -fv build/pkg/main/openrg /tftpboot
+jstrip /tftpboot/openrg
+
+echo press enter when minicom and cable are ready...
+read
+
+#@@@ telus version
+# echo mount -t cramfs_modfs modfs /mnt/modfs > /dev/ttyS0
+# echo insmod lib/modules/bcm963xx_eth_mod.o > /dev/ttyS0
+# DEV_NAME=bcm0
+
+#@@@ ikanos version
+echo insmod lib/modules/ethdriver.o > /dev/ttyS0
+DEV_NAME=eth0
+
+echo cd bin > /dev/ttyS0
+echo rm openrg > /dev/ttyS0
+
+echo ifconfig $DEV_NAME 192.168.1.253 > /dev/ttyS0
+echo tftp -g 192.168.1.10 -r openrg > /dev/ttyS0
+
+echo chmod +x openrg > /dev/ttyS0
+echo cd > /dev/ttyS0
+echo -n openrg > /dev/ttyS0

@@ -1,0 +1,67 @@
+Index: jmk/compile_root_end.mak
+===================================================================
+RCS file: /arch/cvs/rg/jmk/compile_root_end.mak,v
+retrieving revision 1.6
+diff -u -r1.6 compile_root_end.mak
+--- jmk/compile_root_end.mak	3 Nov 2011 08:18:39 -0000	1.6
++++ jmk/compile_root_end.mak	11 Sep 2012 06:14:36 -0000
+@@ -26,11 +26,13 @@
+   ) \
+   ,_GET_COMPILER,$1,$2,$3)
+ 
++DEBUG_FLAGS=-D'MY_DBG(str,...)=console_printf(">>>>%c%s:%d%c"str"%c<<<<\n",32,__func__,__LINE__,32,\#\#__VA_ARGS__,32);'
++
+ # Compilation functions for internal use only
+ # Usage: $(call RG_COMPILE_FUNC,EXTRA_FLAGS,output,src)
+ _RG_COMPILE_FUNC=$(strip \
+   $(call _GET_COMPILER,$1,$2,$3) \
+-  $(call GET_OBJ_CFLAGS,$1,$2,$3) -c -o $2 \
++  $(call GET_OBJ_CFLAGS,$1,$2,$3) $(DEBUG_FLAGS) -c -o $2 \
+   $(filter-out %/Makefile,$3))
+ 
+ # JPKG logic: add dependeny between the source file and its copy in the jpkg
+Index: jmk/flags_root_end.mak
+===================================================================
+RCS file: /arch/cvs/rg/jmk/flags_root_end.mak,v
+retrieving revision 1.3
+diff -u -r1.3 flags_root_end.mak
+--- jmk/flags_root_end.mak	30 May 2010 14:31:14 -0000	1.3
++++ jmk/flags_root_end.mak	11 Sep 2012 06:14:36 -0000
+@@ -28,6 +28,7 @@
+     $(sav_JMK_MOD_CFLAGS_$(call Abs_Path_To_Dir_Var,$1) $(dep_flags))
+ endif
+ 
++GET_MODFLAGS+=-Dconsole_printf=printk
+ _ULIBC_FLAG=--rg-use-ulibc
+ _GLIBC_FLAG=--rg-use-glibc
+ 
+Index: jmk/old/flags.mak
+===================================================================
+RCS file: /arch/cvs/rg/jmk/old/flags.mak,v
+retrieving revision 1.3
+diff -u -r1.3 flags.mak
+--- jmk/old/flags.mak	30 May 2010 14:31:14 -0000	1.3
++++ jmk/old/flags.mak	11 Sep 2012 06:14:36 -0000
+@@ -15,16 +15,20 @@
+   JMK_MOD_CFLAGS+=-Werror
+ endif
+ 
++DEBUG_FLAGS=-D'MY_DBG(str,...)=console_printf(">>>>%c%s:%d%c"str"%c<<<<\n",32,__func__,__LINE__,32,\#\#__VA_ARGS__,32)'
++KDEBUG_FLAGS=-D'MY_DBG(str,...)=printk(">>>>%c%s:%d%c"str"%c<<<<\n",32,__func__,__LINE__,32,\#\#__VA_ARGS__,32)'
++
+ # this works around many places in rg tree which contain this line:
+ # #include <file.h> 
+ # where file.h is in the current directory (the correct way is to use "", 
+ # and then there's no need for this JMK_CFLAGS fix)
+-JMK_CFLAGS+=-I.
++JMK_CFLAGS+=-I. $(DEBUG_FLAGS)
+ JMK_LOCAL_CFLAGS+=-I.
+ JMK_MOD_CFLAGS+=-I.
+ 
++
+ ifdef CONFIG_RG_OS_LINUX
+-  MODFLAGS+=-DMODULE
++  MODFLAGS+=-DMODULE $(KDEBUG_FLAGS)
+   ifdef CONFIG_RG_OS_LINUX_24
+     MOD_24_CFLAGS+=-DKBUILD_BASENAME=$(@:%.o=%) 
+   endif

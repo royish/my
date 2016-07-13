@@ -1,0 +1,7 @@
+. /usr/local/bin/jtools_functions.sh
+MAIN_PATH=`cdr`
+PWD=`pwd`
+cd $MAIN_PATH
+rt rm build
+ln -sf $PWD/build.$1 build
+

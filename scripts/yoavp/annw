@@ -1,0 +1,10 @@
+#/bin/sh
+
+if [[ $# != 1 ]]; then
+	echo "Usage: annw <filename>";
+	exit;
+fi
+
+WORK_REV=`cvs stat $1 | grep "Working" | awk '{ print $3; }'`
+cvs ann -r $WORK_REV $1 | gvim -s /home/shmulik/bin/ann.scr -
+

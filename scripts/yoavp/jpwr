@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [[ $# != 1 ]]; then
+  param=reset
+else
+  param=$1
+fi
+
+case "$param" in
+on)
+    stty -F /dev/ttyS0 115200
+    ;;
+off)
+    stty -F /dev/ttyS0 0
+    ;;
+reset)
+    stty -F /dev/ttyS0 0
+    sleep 1
+    stty -F /dev/ttyS0 115200
+    ;;
+esac
+
+exit 0

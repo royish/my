@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Update package listing for apt repository
+
+INCOMING=/var/www/apt/incoming
+
+# Make sure we're in the apt/ directory
+cd $INCOMING/..
+
+# Remove previous packages
+reprepro removematched stable \*
+# Re-add all
+for i in `ls incoming`; do reprepro -Vb . includedeb stable incoming/$i; done

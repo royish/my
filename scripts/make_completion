@@ -1,0 +1,44 @@
+# Jungo RG tree make config completion
+_jungo_make () 
+{ 
+    local cur prev 
+
+    COMPREPLY=() 
+    cur=${COMP_WORDS[COMP_CWORD]} 
+    first_arg=${COMP_WORDS[1]} 
+
+    if [ "$first_arg" == "config" ] ; then
+
+       if [ $COMP_CWORD -eq 2 ] && \
+          [ "___" != "${cur/#DIST\=*/___}" ] ; then 
+	   COMPREPLY=( $( compgen -W "DIST=" $cur ) )
+       else
+       if [ $COMP_CWORD -eq 2 ] && [ -f pkg/build/config_opt.c ] ; then 
+
+	   local list=`awk -F\" \
+	   	'BEGIN {f=0} \
+		/openrg_distribution_options/ {f=1; next} \
+		/^};/ {f=0; next} \
+		/{[ \t]*\"(.*)\"/ {if (f) print $2}' pkg/build/config_opt.c`
+
+	   COMPREPLY=( $( compgen -W "$list" ${cur/DIST\=/} )) 
+       else 
+       if [ $COMP_CWORD -gt 2 ] && [ -f pkg/build/config_opt.c ] ; then
+
+	   local list=`awk -F\" \
+	   	'BEGIN {f=0} \
+		/openrg_config_options|config_options_base/ {f=1; next} \
+		/^};/ {f=0; next} \
+		/{[ \t]*\"(.*)\"/ {if (f) print $2}' pkg/build/config_opt.c`
+
+	   COMPREPLY=( $( compgen -W "$list" $cur )) 
+       fi 
+       fi 
+       fi 
+   fi 
+   return 0 
+} 
+ 
+#@@@ the -W stuff should be added to the func properly but this way is easier
+complete -F _jungo_make -W "config clean distclean run_tests BUILD=b test_jpkg" -o nospace -o default make cake sake
+

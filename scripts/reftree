@@ -1,0 +1,32 @@
+#!/bin/bash
+
+usage()
+{
+    echo "reftree [48\47\46]..."
+    exit 1
+}
+
+if [ "$#" == "0" ]; then
+    usage
+else
+    echo tree=$HOME/dev/$1
+    tree=$HOME/dev/$1
+    cd $tree
+    TAG=`cvs stat Makefile | grep Tag | sed -e 's/(none)/1 ()/' | \
+      sed -e 's/ *Sticky Tag:[^b(]\(.*\) (.*/\1/'`
+    echo tag=$TAG
+    ls -rd $tree/build.* | sed -e 's%.*/build\.\([^/]*\).*%\1%' > .build_list
+#    cat $tree/build.*/config > .build_list
+# this is for clall
+    echo jcvs -q up --db -r $TAG
+    jcvs -q up --db -r $TAG > list
+    echo jcvs -q up 
+    jcvs -q up > cvsdiff_list
+    echo `date` > $tree/.tree_date
+    echo `cat .build_list`
+    cat .build_list | xargs -l ckall
+    echo rm -f .build_list
+    rm -f .build_list
+#    ctags
+#    ctg
+fi

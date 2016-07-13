@@ -1,0 +1,24 @@
+# history search by up/down
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# show alternatives instead of "beep"
+set show-all-if-ambiguous on
+
+# cycle through alternatives with Meta-S
+#"\M-d": menu-complete
+
+# show the "Display all 123 possibilities? (y or n)" prompt only for long lists
+set completion-query-items 3000 
+
+# do not show hidden files in the list
+#set match-hidden-files off
+
+# removes the annoying "-- more --" prompt for long lists)
+set page-completions off 
+
+
+";5D": backward-word
+";5C": forward-word
+
+

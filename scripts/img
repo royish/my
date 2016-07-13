@@ -1,0 +1,73 @@
+#!/bin/bash
+
+D=`jpwdroot`
+if [ -z "$1" ]; then
+    BUILD=`ls -l $D/build 2> /dev/null | sed -e 's%.*\/\([^/]*\)%\1%'`
+else
+  # I assume build is like build.ABC
+    TEMP=`ls -l $D/build.$1 2> /dev/null`
+    if [ "$TEMP" != "" ]; then
+      BUILD=build.$1
+    else
+      BUILD=`ls -l $D/build 2> /dev/null | sed -e 's%.*\/\([^/]*\)%\1%'`
+      CUSTOM=$1
+    fi
+fi
+if [ "$2" != "" ]; then
+  CUSTOM=$2
+fi
+build_dir=$D/$BUILD
+tree=`basename $D`
+#ver=`$build_dir/pkg/build/rg_version_info -c 2> /dev/null`
+ver=`cat $D/pkg/include/rg_version_data.h 2> /dev/null | \
+  grep -w RG_VERSION | sed -e 's%.*\"\(.*\)\"%\1%'`
+if [ -z $ver ] ; then
+    printf "could not get version\n"
+#    printf "Build \"$BUILD\" in tree \"$tree\" must not be compiled...\n"
+#    exit -1
+fi
+
+path=$ver/$tree/$BUILD
+if [ "$CUSTOM" != "" ]; then
+  path=$path/$CUSTOM
+fi
+
+cd /tftpboot
+mkdir -p $path 2> /dev/null
+
+copy_and_link() {
+  if [ "`ls -l $build_dir/$1/$2 2> /dev/null`" != "" ]; then
+    cp $build_dir/$1/$2 $path/$2
+    rt chmod 777 $path/$2
+    unlink $2
+    ln -sf $path/$2
+    ls --color=auto -la $2  
+  fi
+
+  return 0
+}
+
+copy_and_link pkg/main openrg &
+copy_and_link pkg/main openrg.gz &
+copy_and_link os openrg.img &
+copy_and_link os rgloader.img
+copy_and_link / openrg.rmt &
+copy_and_link / openrg.rms &
+copy_and_link pkg/main rg_factory &
+copy_and_link pkg/kernel/linux/boot image.elf &
+#copy_and_link vendor/broadcom/bcm963xx/linux-2.6/boot/bootimg.elf image.elf
+copy_and_link os/linux-2.6 vmlinux 
+
+if [ "`ls -l /tftpboot/$path/openrg.rmt /var/www/openrg.rmt 2> /dev/null`" != "" ]; then
+  rt unlink /var/www/openrg.rmt 
+  rt ln -sf /tftpboot/$path/openrg.rmt /var/www/openrg.rmt
+  ls --color=auto -la /var/www/openrg.rmt
+fi
+if [ "`ls -l /tftpboot/$path/openrg.rms /var/www/openrg.rms 2> /dev/null`" != "" ]; then
+  rt unlink /var/www/openrg.rms 
+  rt ln -sf /tftpboot/$path/openrg.rms /var/www/openrg.rms
+  ls --color=auto -la /var/www/openrg.rms
+fi
+
+cd $D
+jstrip /tftpboot/$path/openrg

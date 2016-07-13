@@ -1,0 +1,1 @@
+gvimdiff $1 ~/48.rg/pkg/autotest/$1

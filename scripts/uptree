@@ -1,0 +1,35 @@
+#!/bin/bash
+
+usage()
+{
+    echo "uptree [48\47\46]..."
+    exit 1
+}
+
+if [ "$#" == "0" ]; then
+    D=`jpwdroot`
+    tree=`basename $D`
+    echo jcvs -q up --db
+    nice -18 ionice -c 3 jcvs -q up --db > up_list
+    echo cvs -q up -dP
+    nice -18 ionice -c 3 cvs -q up -dP > cvsdiff_list
+    cat cvsdiff_list | grep "^[MRAC]" | cut -f 2 -d " " > list
+    if [ "`cat list`" != "" ] ; then
+        cvs diff -Nu `cat list` > ~/dev/$tree/$tree.patch
+    fi
+    echo `date` > tree_date
+else
+    echo tree=$HOME/dev/$1.rg
+    tree=$HOME/dev/$1.rg
+    cd $tree
+    echo jcvs -q up --db
+    nice -18 ionice -c 3 jcvs -q up --db > up_list
+    echo cvs -q up -P
+    nice -18 ionice -c 3 cvs -q up -P > cvsdiff_list
+    cat cvsdiff_list | grep "^[MRAC]" | cut -f 2 -d " " > list
+    if [ "`cat list`" != "" ] ; then
+        cvs diff -Nu `cat list` > ~/dev/$1/$1.patch
+    fi
+    echo `date` > $tree/tree_date
+#    ctags
+fi

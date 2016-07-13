@@ -1,0 +1,7 @@
+grep -v 		\
+  -e '^+++ '		\
+  -e '^--- '		\
+  -e '^diff -u '	\
+  -e '^retrieving '	\
+  $* | \
+sed -e 's/^@@.*/@@@@/g'

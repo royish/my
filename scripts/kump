@@ -1,0 +1,3 @@
+rt killall -9 pump
+rt killall -9 dhclient
+rt cp /etc/resolv.conf{.sav,}

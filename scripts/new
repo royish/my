@@ -1,0 +1,5 @@
+cd
+rt mv 4$1.rg 4$1.rg.tmp 
+cvs co -d 4$1.rg -r branch-4_$1 rg-dev
+cd 4$1.rg
+mkcall

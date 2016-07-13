@@ -1,0 +1,1 @@
+awk -F, '$2==1 && $3==0 {printf("%s,%s,%s@jungo.com\n", $4, $5, $1)}' ~/project/db/users.csv

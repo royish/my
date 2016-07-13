@@ -1,0 +1,8 @@
+#!/bin/bash
+
+rt killall minicom
+rt killall openrg.uml
+jrguml stop
+jrguml start $1
+rt killall minicom
+rt killall openrg.uml

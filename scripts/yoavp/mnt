@@ -1,0 +1,2 @@
+#!/bin/sh
+smbmount //fs/lib /net/fs/arch -o workgroup=jungo,username=yoavp,password=hgfkjh

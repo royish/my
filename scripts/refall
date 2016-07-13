@@ -1,0 +1,8 @@
+#!/bin/bash
+
+trees=`ls -d ~/*.rg | sed -e 's/\/home\/royi\///'`
+echo $trees
+for i in $trees; do 
+  echo reftree $i
+  reftree $i
+done ;

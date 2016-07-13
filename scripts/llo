@@ -1,0 +1,34 @@
+#!/bin/bash
+
+ORIGIFS=$IFS
+
+# set $IFS to end-of-line
+IFS=`echo -en "\n\b"`
+
+for line in $(cat revs_clean.patch); do
+  echo $line
+  #printf "Should I Patch? [Y/n] "
+  #read cont
+  #if [ $cont ]; then
+  #  if [ "$cont" == "n" ]; then
+  #    printf "not patching...\n"
+  #  else
+  #    $line
+  #    x=$PIPESTATUS
+  #  fi
+  #else
+  #  $line
+  #  x=$PIPESTATUS
+  #fi
+
+  $line
+  x=$PIPESTATUS
+  if (($x)); then
+    printf "FAILED!!!\n"
+    break 2
+  fi
+done
+
+# set $IFS back
+IFS=$ORIGIFS
+

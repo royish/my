@@ -1,0 +1,16 @@
+#/bin/sh
+
+if [[ $# != 2 ]]; then
+	echo "Usage: upg <rev_num> <filename>";
+	echo "rev_num includes the opening '1.'";
+	exit;
+fi
+
+REV=$1
+DIR=`dirname $2`
+FILE=`basename $2`
+TMP_FILE=`echo $DIR/upg.tmp.$REV.$FILE`
+cvs -q update -p -r $REV $2 > $TMP_FILE
+gvim -f $TMP_FILE
+rm -f $TMP_FILE
+

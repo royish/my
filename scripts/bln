@@ -1,0 +1,6 @@
+. /usr/local/bin/jtools_functions.sh
+
+cdr
+PWD=`jpwdroot`
+rt rm build
+ln -sf $PWD/build.$1 $PWD/build

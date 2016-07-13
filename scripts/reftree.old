@@ -1,0 +1,12 @@
+#!/bin/bash
+
+tree=~/4_$1.rg
+cd $tree
+rt rm -rf tmp_builds/
+mkdir tmp_builds
+rm -f $tree/failed
+touch $tree/failed
+ls -d $tree/build.* | sed -e 's%.*/build\.\([^/]*\).*%\1%' > build_list
+cvs -q up -dP -r branch-4_$1
+cat build_list | xargs -l mkall
+bl UML

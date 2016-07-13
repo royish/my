@@ -1,0 +1,21 @@
+#!/bin/sh
+
+kbd
+#kwin --replace & # f13 was not defined when kwin started...
+#@@@ this ruins a lot - find a better way
+#@@@ also update language
+
+# jnetwork restart
+xhost +
+rt route add -net 192.168.71.0/24 gw wall metric 5
+rt route add -net 192.168.72.0/24 gw wall metric 5
+rt route add -net 192.168.65.0/24 gw wall metric 5
+rt route add pop3 gw wall
+rt route add mail gw wall
+#rt route add rony lo
+
+rt ifconfig eth1 l1
+
+# rt killall artsd
+# killall synergys
+# synergys

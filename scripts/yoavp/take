@@ -1,0 +1,21 @@
+#!/bin/sh
+
+rm -f build/os/linux/linux
+rm -f build/os/linux/vmlinux
+cake && cp -fv build/openrg.img /tftpboot/$1 \
+  && cp -fv build/pkg/kernel/linux/boot/image.elf /tftpboot || exit
+
+if [ "$1" == "-b" ]; then
+  # try to boot
+  # maybe we need to login
+  echo admin > /dev/ttyS0
+  echo admin > /dev/ttyS0
+  echo admin > /dev/ttyS0
+  echo system reboot > /dev/ttyS0
+  # if we still didn't reboot - maybe we're in bootloader
+  echo reset > /dev/ttyS0
+  # if we still didn't reboot - maybe we're in shell
+  echo exit > /dev/ttyS0
+  sleep 1
+  echo system reboot > /dev/ttyS0
+fi

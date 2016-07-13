@@ -1,0 +1,51 @@
+#!/bin/bash
+
+C_RED='\033[1;31m'
+C_GREEN='\033[1;32m'
+C_YELLOW='\033[1;33m'
+C_BLUE='\033[1;34m'
+C_PURPLE='\033[1;35m'
+C_CYAN='\033[1;36m'
+C_WHITE='\033[1;37m'
+C_UNDERLINE='\033[4;37m'
+C_BLACK='\033[1;38m'
+C_DEF='\033[0m'
+
+cd
+
+for tree in `ls -d dev/*.rg`; do
+    TAG=`cvs stat $tree/Makefile | grep Tag | sed -e 's/\t1/dev ()/' | \
+        sed -e 's/(none)/dev ()/' | sed -e 's/ *Sticky Tag:[^b(]\(.*\) (.*/\1/'`
+    build=`ls -l $tree/build 2> /dev/null | \
+        sed -e 's%.*/build\.\([^/]*\).*%\1%'`
+    TIME=`cat $tree/tree_date 2> /dev/null`
+    printf "$C_GREEN%-11s $C_PURPLE%-18s $C_DEF%-24s\n" $tree $TAG "$TIME"
+    if [ "$1" == "-m" ]; then
+        modified=`cat $tree/cvsdiff_list`
+        if [ "$modified" != "" ]; then
+            printf "modified files:\n"
+            printf "\t$C_DEF%-2s\n" $modified 
+        fi
+    else
+        for conf in `ls $tree/build.*/config 2> /dev/null`; do
+            if [ ! -L `dirname $conf` ]; then
+	        DIST=`ls $conf | sed -e 's%.*/build\.\([^/]*\).*%\1%'`
+                failure=`ls $HOME/$tree/build.$DIST/fail* 2> /dev/null`
+                if [ "$1" == "-c" ]; then
+                    ctime=`cat $HOME/$tree/build.$DIST/.compile_date `
+                fi
+                if [ $build ] && [ $DIST == $build ]; then
+                    printf "$C_DEF%-2s -->" 
+                fi
+		CONF=`cat $conf | \
+		    sed -e "s%BUILD=[^ ]*%\\\\$C_BLUE&\\\\$C_DEF%g" \
+		    -e "s%DIST=[^ ]*%\\\\$C_UNDERLINE&\\\\$C_DEF%g" `
+		printf "\t$CONF%-20s"
+		if [ "$failure" != "" ]; then
+                    printf "\t$C_RED FAILED! --> $failure" 
+                fi
+                printf "\t$C_CYAN $ctime\n" 
+            fi
+        done
+    fi
+done

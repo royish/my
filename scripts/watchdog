@@ -1,0 +1,48 @@
+#!/bin/bash -e
+
+dir=.
+log=/var/log/watchdog
+
+function usage()
+{
+cat >&2 << EOF
+Monitor a process's exit status and re-run it if it faild
+Usage: `basename $0` [options] "executable [parameters]"
+    Options:
+        -d	Change running directory.
+		Default = .
+	-l	Log file
+		Default = /var/log/watchdog
+EOF
+  exit -1
+}
+
+# $1 - Process and Parameters
+function watchdog_proc()
+{
+  cd $dir
+  echo ">>>> Executing \"$1\"" >> $log
+
+  until sh -c "$1" >> $log 2>&1 ; do
+    echo ">>>> '$1' crashed with exit code $?.  Respawning..." >> $log
+    sleep 1
+  done
+
+  echo ">>>> '$1' exited gracefuly." >> $log
+}
+
+# Parse parameters
+while [ ! -z "$1" ] ; do
+  case "$1" in
+    -d) dir=$2; shift 1;;
+    -l) log=$2; shift 1;;
+    -*) usage;;
+    *) break;;
+  esac
+  shift 1
+done
+
+# Verify all mandatory parametes exist
+[ -z "$1" ] && usage
+
+watchdog_proc "$1"

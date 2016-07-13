@@ -1,0 +1,2 @@
+# see ~/cxoffice/dotwine/fake_windows for others
+~/.cxoffice/bin/wine "C://Program Files//Internet Explorer//IEXPLORE.EXE" &

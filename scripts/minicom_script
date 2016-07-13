@@ -1,0 +1,32 @@
+timeout 300000
+verbose on
+
+qqq:
+
+expect {
+  "Hit any key to stop autoboot:"
+  timeout 10 goto oops
+}
+
+send " "
+
+expect {
+  "VR9 #"
+  timeout 10 goto oops
+}
+
+#send "sf probe 3 ; sf write 80400000 0x0002FFE8 1 "
+#send "run reset_ddr_config"
+
+expect {
+  "VR9 #"
+  timeout 10 goto oops
+}
+
+oops:
+#! rt date >> /home/igorl/tmp/lq_nodebug_vrx268_v1_1
+! rt stty -F /dev/ttyUSB0 speed 0
+sleep 1
+! rt stty -F /dev/ttyUSB0 speed 115200
+
+goto qqq

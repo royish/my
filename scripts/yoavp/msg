@@ -1,0 +1,8 @@
+if (( $# < 2 )); then
+  echo 'usage: msg <destination> <message>'
+  exit
+fi
+
+DISPLAY=$1:0.0
+shift 1
+xmessage -center $USER: $@ 

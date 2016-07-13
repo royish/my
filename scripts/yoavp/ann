@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if [[ $# = 2 ]]; then
+  FILE=$2
+else
+  FILE=$1
+fi
+LINE=`echo $FILE:0 | sed -e 's%[^:]*:\+\([0-9]*\).*%\1%'`
+FILE=`echo $FILE | sed -e 's%\([^:]*\).*%\1%'`
+
+if [[ $# = 2 ]]; then
+  REV="1."$1
+else
+  REV=`cvs stat $FILE | grep "Working" | awk '{ print $3; }'`
+fi
+
+cvs ann -r $REV $FILE | gvim +$LINE -s /home/yoavp/scripts/ann.scr -c 'set nomodified' - &
+

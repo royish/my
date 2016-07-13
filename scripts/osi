@@ -1,0 +1,1 @@
+rdesktop -f -D -K -T "osi" -g workarea -a 16 -u royi -p jnjnuh osi &

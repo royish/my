@@ -1,0 +1,20 @@
+#!/bin/bash
+
+clean_exit()
+{
+    echo aborted
+    exit 1
+}
+
+trap clean_exit SIGINT SIGTERM
+
+false # get a 'bad' return code as init for the while condition
+
+until [ $? == "0" ]
+do
+	ping -c 1 -w 1 $1 > /dev/null
+	#2&>1
+done
+
+echo $1 lives
+xmessage -center pong: $1 lives

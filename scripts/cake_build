@@ -1,0 +1,48 @@
+#!/bin/bash
+. /usr/local/bin/jtools_functions.sh
+
+DIST=$1
+D=`jpwdroot`
+if [ -z $1 ]; then
+  build=`ls -l $D/build 2> /dev/null | sed -e 's%.*/build\.\([^/]*\).*%\1%'`
+else
+  build=$DIST
+  shift 1
+fi
+for arg
+do
+  if [ ${arg:0:6} == "BUILD=" ]; then
+    if [ ${arg:6:6} == "build." ]; then
+      build=${arg:12}
+    else
+      build=${arg:6}
+    fi
+  else
+    if [ ${arg:0:5} == "DIST=" ]; then
+      DIST=${arg:5}
+      echo GOT DIST $DIST
+    else
+      args+="$arg "
+    fi
+  fi
+done
+echo GOT BUILD $build
+dir=build.$build
+
+if [ -d $dir ] ; then
+  rm -f $dir/failure 
+  cdr && bl $build && mk | tee $dir/compilation
+else
+  cdr && mk config DIST=$DIST BUILD=$dir $args && mk | tee $dir/compilation
+fi
+x=$PIPESTATUS
+touch $dir/.compile_date
+echo `date` | tee $dir/.compile_date
+
+if (($x)); then
+  tail -n 100 $dir/compilation  2> /dev/null > $dir/failure
+else
+  img
+fi
+#ctg &
+cdr

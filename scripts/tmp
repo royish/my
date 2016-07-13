@@ -1,0 +1,9 @@
+#!/bin/sh
+
+echo "jinsmod"
+echo "$IS_OPENRG"
+echo "royi"
+if [ "$IS_OPENRG" != "1" ]; then
+  echo "ROYI: insmod $@"
+  insmod $@
+fi

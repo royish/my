@@ -1,0 +1,56 @@
+#!/bin/sh -e
+
+function usage()
+{
+cat >&2 << EOF
+Receive a popup notification when a person arrives at the office
+Usage: `basename $0` [options] username
+    Options:
+	-t X	Check every X seconds.
+		Default = 60
+EOF
+    exit -1
+}
+
+# $1 - User name
+# $2 - User arrival time
+function user_arrived()
+{
+    xmessage -buttons "OK" -default "OK" -center "$1 arrived at $2" &
+}
+
+# $1 - User name
+# $2 - Time between polls
+function check_arrival()
+{
+  while true; do
+      local csv
+
+      hours=`wget -qO - "http://web.home.jungo.com/budget_report.cgi?report_type=Activity&output=CSV%20file&from_date=today&to_date=1%20day&filter_name=$1&action=get_csv" | tail -n 1 | awk -F "," '{ print $4 }'`
+
+      if [ -n "$hours" ]; then
+	  user_arrived $1 `echo $hours | sed 's/-.*//'`
+	  break
+      fi
+
+      sleep $2
+  done
+}
+
+timeout=60
+user=
+
+# Parse parameters
+while [ ! -z "$1" ] ; do
+  case "$1" in
+    -t) timeout=$2; shift 1 ;;
+    -*) usage;;
+    *) user=$1; shift 1; break;;
+  esac
+  shift 1
+done
+
+# Verify all mandatory parameters exist
+[ -n "$1" -o -z "$user" ] && usage
+
+check_arrival $user $timeout &

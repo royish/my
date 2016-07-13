@@ -1,0 +1,32 @@
+#!/bin/bash
+
+usage()
+{
+    echo "cleantree [48\47\46]..."
+    exit 1
+}
+
+if [ "$#" == "0" ]; then
+    usage
+else
+    echo tree=$HOME/$1.rg
+    tree=$HOME/$1.rg
+    cd $tree
+    TAG=`cvs stat Makefile | grep Tag | sed -e 's/(none)/1 ()/' | \
+      sed -e 's/ *Sticky Tag:[^b(]\(.*\) (.*/\1/'`
+#    ls -rd $tree/build.* | sed -e 's%.*/build\.\([^/]*\).*%\1%' > build_list
+    cat $tree/build.*/config > .build_list
+    echo mkdir deltree
+    mkdir deltree
+    echo rt mv build.* deltree
+    rt mv build.* deltree
+    echo jcvs -q up --db -r $TAG
+#    jcvs -q up | grep "^[MRAC]" | cut -f 2 -d " " > list
+    jcvs -q up --db -r $TAG
+    echo `date` into $tree/.tree_date
+    echo `date` > $tree/.tree_date
+    echo `cat .build_list`
+    cat .build_list | xargs -l clall
+    echo rt rm -rf deltree .build_list
+    rt rm -rf deltree .build_list
+fi

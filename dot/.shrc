@@ -1,0 +1,97 @@
+# set PATH so it includes user's private bin if it exists
+if [ -d ~/bin ] ; then
+    PATH=~/bin:/usr/local/sbin:"${PATH}"
+fi
+
+# do the same with MANPATH
+if [ -d ~/man ]; then
+    MANPATH=~/man:"${MANPATH}"
+fi
+    
+# If running interactively, then:
+if [ "$PS1" ]; then
+
+    # append to history
+    shopt -s histappend
+
+    # write history to disk on every prompt
+    PROMPT_COMMAND='history -a'
+
+    # smart 'less'
+    eval `lesspipe`
+
+    # color ls
+    eval `dircolors -b`
+    alias ls='ls --color=auto'
+    alias ll='ls -l'
+
+    # color grep
+    alias grep='grep --color=auto'
+
+    # bash completion if available
+    if [ -f /etc/bash_completion ]; then
+      . /etc/bash_completion
+    fi
+
+    # visited dirs
+    export CDPATH='.:..:../..'
+
+    # require ^-D twise to exit
+    export IGNOREEOF=1
+
+    # Aliases
+     alias ee='cd ~/project/tools/qa/bat/env'
+     alias jj='cd ~/project/tools/jboard'
+     alias qq='cd ~/project/rg/qa'
+     alias c=clear
+     alias up='cvs -q up -dP'
+     alias +log='rt tail -f /var/log/messages'
+     #alias +toolremove='/home/yaniv/toolchain_remove.sh'
+     alias +rdel='rt route del default'
+     alias +radd='rt route add default gw'
+     alias +dhcpkill='rt killall -9 pump dhclient; ps ax | grep "pump\|dhclient"'
+     alias +reload='. ~/.shrc'
+     alias +synres='/etc/init.d/synergy restart'
+     alias +netres='rt /etc/init.d/networking restart; rt mount -a; rt /etc/init.d/am-utils start'
+     alias +netkill='rt umount -a; rt /etc/init.d/am-utils stop; rt /etc/init.d/networking stop'
+     alias +osi="rdesktop osi -g 90% -u jungo -p hgfkjh -z -x l -a 24 &"
+     
+    # BAT Aliases
+	alias log-debug='rt tail -f /home/bat/bat/debug_log'
+	alias log-std='rt tail -f /home/bat/bat/std_log'
+	alias log-tmp='rt tail -f /home/bat/bat/tmp_log'
+	alias bat='rt /etc/init.d/batd '
+
+    # color prompt
+    . ${HOME}/.prompt
+fi
+
+# PATH issues
+PATH="${PATH}":/usr/local/jungo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/X11:/usr/local/Adobe/Acrobat7.0/bin
+
+# BAT Additions
+export PATH="${PATH}":$HOME/bin:/sbin:/usr/sbin
+export BAT_RUN=1
+export JNETWORK_REG_MODE_WAN_DEV=eth1
+export JNETWORK_REG_MODE_LAN_DEV=eth0
+export JLAB_CLOSED_LOOP=y
+export JBOARD_VLAN_CONN_SUPPORT=y
+#export JNETWORK_REG_MODE_WAN_DSL2_DEV=eth2.3101
+
+# Allow X connections
+xhost +
+
+# Add thalias bat='rt /etc/init.d/batd 'alias bat='rt /etc/init.d/batd ' correct DISPLAY parameter
+client_ip=$REMOTEHOST
+if [ $client_ip ]; then
+	export DISPLAY="$client_ip:0.0"
+#	echo "Exported DISPLAY with ip: $client_ip:0.0" # Pay attention that this line will prevent you from using scp
+else
+	export DISPLAY=":0"
+fi
+
+#Royi
+alias bd=jboard
+complete -W "connect disconnect status-full power-reset list wan power-up power-down --register-local --unregister-local= LOCAL --conn-vlan" bd jboard
+alias r='export DISPLAY=royi:0.0'
+alias ic='rt ifconfig'

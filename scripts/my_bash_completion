@@ -1,0 +1,23 @@
+#!/bin/bash
+
+_minicom()
+{
+  cur=${COMP_WORDS[COMP_CWORD]}
+  minis=`ls /home/shaulir/.minirc.$cur 2> /dev/null | \
+    sed "s/.minirc.//"`
+  COMPREPLY=( $minis )
+}
+complete -F _minicom mini minicom
+
+_scripts()
+{
+  cur=${COMP_WORDS[COMP_CWORD]}
+  if [ -d /home/shaulir/my/scripts ] ; then 
+    list=`ls /home/shaulir/my/scripts/`
+  fi
+  COMPREPLY=( $( compgen -W "$list" $cur ) )
+}
+complete -F _scripts gg
+
+complete -W "show addbr addif stp delbr delif" bc brctl
+complete -W "up down lanbr wanbr ctlbr eth0 eth1 eth2 0.0.0.0 192.168.1.10 192.168.61.10" ic ifconfig

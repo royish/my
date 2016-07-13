@@ -1,0 +1,14 @@
+#!/bin/sh
+
+at_full -t $@
+#for test in $@; do
+#    echo running $test
+#    at_full -t $test
+#    x=$PIPESTATUS
+#    if (($x)); then
+#      echo $test failed!
+#      exit $x
+#    fi
+#done;
+#exit $x
+

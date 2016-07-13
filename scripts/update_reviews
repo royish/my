@@ -1,0 +1,71 @@
+#!/bin/bash -e
+
+function usage()
+{
+cat >&2 << EOF
+Mass update reviews
+Usage: `basename $0` [options] <reviews>
+    Options:
+        -s status   | Change status
+        -r reviewer | Change reviewer
+	-R remark   | Add remark ***
+EOF
+    exit -1
+}
+
+# $1 = Title
+# $2 = New value
+# $3 = Replace? (0 = Append, else = replace)
+# $4 = File name
+function update_value()
+{
+    if [ $3 -eq 0 ]; then
+	if [ -n "`grep "^$1:\s*$" $4`" ]; then
+            # Field is empty
+	    sed -i "s/^$1:.*/$1: $2/" $4
+	else
+            # Field isn't empty, append
+	    sed -i "/$1:/s|$|\n$2|" $4
+	fi
+    else
+	sed -i "s/^$1:.*/$1: $2/" $4
+    fi
+}
+
+status=""
+reviewer=""
+remark=""
+reviews=""
+
+while [ ! -z "$1" ] ; do
+    show_usage=1
+    case "$1" in
+	-s) [ -z "$reviews" ] && status=$2 && show_usage=0 && shift 1 ;;
+	-r) [ -z "$reviews" ] && reviewer=$2 && show_usage=0 && shift 1 ;;
+	-R) [ -z "$reviews" ] && remark=$2 && show_usage=0 && shift 1 ;;
+	*) reviews="$reviews $1"; show_usage=0 ;;
+    esac
+    [ $show_usage -ne 0 ] && usage
+    shift 1
+done
+
+pushd ~/review > /dev/null
+trap "popd > /dev/null; exit" INT TERM EXIT
+
+# Verify all mandatory parameters exist
+[ -z "$reviews" ] && usage
+[ -z "$status" -a -z "$reviewer" -a -z "$remark" ] && echo "Nothing to update" && usage
+
+echo $reviews
+for r in $reviews; do
+    echo "Updating $r"
+    dir=`echo $r | awk '{ print substr( $0, length($0) - 1, length($0) ) }'`
+    filename=$dir/$r
+    cvs -fq co -d $dir review/$filename
+    [ -n "$status" ] && update_value "STATUS" "$status" 1 $filename
+    [ -n "$reviewer" ] && update_value "REVIEWER" "$reviewer" 1 $filename
+    [ -n "$remark" ] && update_value "REMARKS" "$remark" 0 $filename
+    cvsdiff $filename
+    cvs -fq ci -m "Updated by review edit" $filename
+    rm $filename
+done

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+OFILE="/home/royi/cvs_profile.log"
+ODIR="/tmp"
+MODULE="rg"
+CYCLES="10"
+
+rm -f $OFILE
+i="0"
+cd $ODIR
+while [ "$i" -lt  $CYCLES ]
+do
+   echo "" >> $OFILE
+   echo "" >> $OFILE
+   echo "Checking out tree number $i"
+   echo "Checking out module $MODULE" >> $OFILE
+   echo "Start Time:" >> $OFILE
+   date >> $OFILE
+   cvs co -d rg.$i $MODULE > /dev/null
+   echo "End Time:" >> $OFILE
+   date >> $OFILE
+   rm -rf rg.$i
+   i=`expr $i + 1`
+done
+
+exit 0 

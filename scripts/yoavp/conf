@@ -1,0 +1,13 @@
+echo rg_conf_set wbm/session_lifetime 900000000	 > /dev/pty/s186
+echo rg_conf_set cwmp/enabled 0			 > /dev/pty/s186
+echo rg_conf_set jnet/enabled 0			 > /dev/pty/s186
+echo conf set wbm/session_lifetime 900000000	 > /dev/pty/s186
+echo conf set cwmp/enabled 0			 > /dev/pty/s186
+echo conf set jnet/enabled 0			 > /dev/pty/s186
+echo conf set system/network/initial_setup 1	 > /dev/pty/s186
+echo conf set wbm/license_agreed 1		 > /dev/pty/s186
+echo conf set wbm/is_login_welcome_done 1	 > /dev/pty/s186
+echo conf set wbm/is_login_setup_done 1		 > /dev/pty/s186
+echo conf set wbm/is_installation_done 1	 > /dev/pty/s186
+echo reconf 1					 > /dev/pty/s186
+echo conf reconf 1				 > /dev/pty/s186

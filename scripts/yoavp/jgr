@@ -1,0 +1,10 @@
+#!/bin/sh
+jcvs grep --color=always "$@" | hif
+
+#@@@all_args="$@"
+#@@@declare -i x
+#@@@x=$#-1
+#@@@shift $x
+#@@@jcvs grep $all_args | hil "$1"
+# use the line below if you want to use spaces. it will ruin '-i'
+#jcvs grep "$all_args" | hil "$1"

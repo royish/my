@@ -1,0 +1,11 @@
+#!/bin/sh
+
+for i in `seq 1 10`; do
+  printf ".\n"
+  $@;
+  if [ "$?" -ne "0" ]; then
+    printf "$i"
+    exit -1
+  fi
+done
+printf "|\n"

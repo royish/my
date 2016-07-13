@@ -1,0 +1,11 @@
+. /usr/local/bin/jtools_functions.sh
+
+cdr
+rm -f tags
+taga pkg/main
+taga pkg/mgt
+taga pkg/util
+taga pkg/include
+taga os/linux-2.6/include/linux
+taga os/linux-2.6/include/net
+cd -

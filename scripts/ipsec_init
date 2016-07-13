@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rt su -c 'echo 0 > /proc/sys/net/ipv4/conf/eth0/rp_filter'
+rt service ipsec restart

@@ -1,0 +1,1 @@
+D=`jpwdroot` && rm -f $D/build && ln -s $D/$1 $D/build

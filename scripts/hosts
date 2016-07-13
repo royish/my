@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sbat rt /etc/init.d/batd $1

@@ -1,0 +1,19 @@
+#!/bin/bash
+. /usr/local/bin/jtools_functions.sh
+
+BUILD=$@
+dir=build.$BUILD
+ver=`pwd | sed "s/.*\/\([4-9]\)\([0-9]*\)\.rg.*/\1_\2/"`
+build=`echo $BUILD | tr A-Z a-z`
+
+cdr && cake config DIST=$BUILD && cake > $dir/compilation
+x=$PIPESTATUS
+echo `date` > $dir/.compile_date
+
+if (($x)); then
+  tail -n 100 $dir/compilation > $dir/failure
+else
+  cp $dir/pkg/main/rg_factory /tftpboot/$build\_$ver\_rg_factory
+  cp $dir/os/openrg.img /tftpboot/$build\_$ver\_openrg.img
+fi
+cdr

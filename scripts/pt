@@ -1,0 +1,2 @@
+cd /tftpboot
+tftp -m binary 192.168.1.1 -c put openrg.img &

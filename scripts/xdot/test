@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#WINID=$(xdotool search --name 'Google Chrome' | head -n 1)
+for WINID in `xdotool search --onlyvisible --name "Chrome"`; do
+
+while true
+do
+	printf "WINID $WINID:\n"
+        printf "`xwininfo -id $WINID | head -n 2`\n"
+	FOUND=$(xwininfo -id $WINID | grep YouTube)
+	printf "FOUND $FOUND\n"
+        if [ "$FOUND" == "" ]
+        then
+                xdotool windowactivate $WINID key 'ctrl+Tab'
+        else
+	  	printf "FOUND IT!\n"
+                break
+        fi
+#        sleep 2
+done
+done

@@ -1,0 +1,1 @@
+cake -C pkg/dhcp && cake -C pkg/main && cake ramdisk && cake -C os 

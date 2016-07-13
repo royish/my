@@ -1,0 +1,4 @@
+#!/bin/sh
+
+jcvs up -q -n $* 2>&1 | ~/scripts/colorup.pl
+

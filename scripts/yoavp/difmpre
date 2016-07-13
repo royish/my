@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# this one is for merge preparation
+
+#TAG_BASE=branch-vx_route-start
+#TAG_BRANCH=branch-vx_route-end
+#TAG_DST_BEFORE=merge_before-branch-vx_route-dev
+#TAG_RESULT=merge-branch-vx_route-dev
+
+#TAG_BASE=tag-3_14_14_1_5
+#TAG_BRANCH=tag-3_14_14_1_8
+#TAG_DST_BEFORE=branch-3_14_14_2
+
+#TAG_BASE=tag-3_14_39
+#TAG_BRANCH=branch-3_14_39_2
+#TAG_DST_BEFORE=branch-3_15
+#TAG_DST_BEFORE=branch-4_0
+
+TAG_BASE=tag-3_14_0
+TAG_BRANCH=branch-3_15
+TAG_DST_BEFORE=branch-4_0
+
+
+
+
+FILE_NAME=`basename "$1"`
+
+TMP_BASE=.tmp.base.$FILE_NAME
+cvs up -p -r $TAG_BASE $1 > $TMP_BASE
+
+TMP_BRANCH=.tmp.branch.$FILE_NAME
+cvs up -p -r $TAG_BRANCH $1 > $TMP_BRANCH
+
+TMP_DST_BEFORE=.tmp.dst-before.$FILE_NAME
+cvs up -p -r $TAG_DST_BEFORE $1 > $TMP_DST_BEFORE
+
+#TMP_RESULT=.tmp.result.$FILE_NAME
+#cvs up -p -r $TAG_RESULT $1 > $TMP_RESULT
+
+#gvim -df $TMP_BRANCH $TMP_BASE $TMP_DEV
+xxdiff $TMP_BRANCH $TMP_BASE $TMP_DST_BEFORE
+rm -f $TMP_BRANCH $TMP_BASE $TMP_DST_BEFORE
+

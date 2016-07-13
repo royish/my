@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#rt ifconfig eth0 up
+
+rt route del default gw 192.168.1.1
+rt route add default gw 10.71.1.254
+rt route -n
+#rt route del default gw 10.71.1.1
+#rt route add default gw 192.168.1.1
+#rt route -n
+

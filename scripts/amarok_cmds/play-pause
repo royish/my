@@ -1,0 +1,2 @@
+#ssh royi@royi "DISPLAY=:0.0 rt amarok -t"
+amarok -t

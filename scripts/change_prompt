@@ -1,0 +1,3 @@
+rt cp ~/.prompt ~/.prompt_tmp
+rt cp ~/.prompt_other ~/.prompt
+rt cp ~/.prompt_tmp ~/.prompt_other

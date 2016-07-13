@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#awk -F, "\$25==\"$1\" && \$2==1 {print \$1}" ~/project/db/users.csv
+# bug in the above - some users have field values like: "whatever, bla" which
+# ruins the field count
+# unreadable fix:
+
+if [ $# == 1 ] ; then
+    level=0
+else
+    level=$1
+    shift 1
+fi
+
+for u in `grep "^[^,]*,1,0,\(\(\"[^\"]*\",\)\|\([^\",]*,\)\)\{21\}$1," \
+	~/project/db/users.csv | cut -d, -f1` ; do
+    printf "%*s%s\n" $(($level*8)) " " $u
+    $0 $(($level+1)) $u
+done
+

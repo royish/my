@@ -1,0 +1,8 @@
+#!/bin/bash
+
+trees=`ls -d ~/*.rg | sed -e 's/\/home\/royi\///'| sed -e 's/\.rg//'`
+echo $trees
+for i in $trees; do 
+  echo cleantree $i
+  cleantree $i
+done ;

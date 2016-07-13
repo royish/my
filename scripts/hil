@@ -1,0 +1,39 @@
+#!/bin/bash
+#sed -e 's/'$1'/[00m[36m[01m'$1'[00m[39m[02m/g'
+
+# Some useful color codes.
+#
+col_black="[30m"
+col_red="[31m"
+col_green="[32m"
+col_brown="[33m"
+col_blue="[34m"
+col_purple="[35m"
+col_cyan="[36m"
+col_ltgray="[37m"
+
+col_norm="[00m"
+col_background="[07m"
+col_brighten="[01m"
+col_underline="[04m"
+col_blink="[05m"
+col_reverse="[07m"
+
+#col_yellow=$col_brown . $col_brighten
+#col_white=$col_ltgray . $col_brighten
+
+# Customize colors here...
+#
+col_default=$col_ltgray
+col_hilight=$col_cyan$col_brighten
+#col_file=$col_cyan . $col_brighten
+#col_line=$col_yellow
+
+# side effect of the second sed - if you search for xxx.*yyy and the line goes
+# sth like:  xxx zzz xxx www yyy  ; then only the last xxx www yyy will be
+# hil-ed
+
+#sed -e 's/^\([^:]*\):\([0-9]*\):/[32m[01m\1[00m:\2:   ZZZZYYYY/' | sed -e "s%ZZZZYYYY\(.*\)\($1\)%\1[00m[36m\2[00m[39m[02m%g" | sed -e "s%ZZZZYYYY%%"
+
+
+sed -e "s%$1%[31m[01m&[00m%g"

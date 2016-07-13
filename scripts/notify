@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+#$1 = Success / Failure flag
+
+text=":("
+btn="Damn..."
+if [ $1 -eq 0 ]; then
+  text=":)"
+  btn="Hurray"
+fi
+
+xmessage -buttons "$btn" -default "$btn" -center "$text"
+exit $1

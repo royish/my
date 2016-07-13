@@ -1,0 +1,6 @@
+#!/bin/bash
+. /usr/local/bin/jtools_functions.sh
+
+D=`jpwdroot`
+
+/bin/grep -i --color=always -n -B1 $1 $D/build/rg_config.*;

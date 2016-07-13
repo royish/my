@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# fast make kernel
+
+for i in $*; do
+    sake -C "pkg/$i"
+    if [ "$?" -ne "0" ]; then
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in pkg/$i"
+	#beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+	exit -1
+    fi
+done
+
+sake -C os
+if [ "$?" -ne "0" ]; then
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in os"
+    #beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+    exit -1
+fi
+
+#beep -f1000 -l120 -n -f1400 -l120 -n -f1200 -l120 -n -f1600 -l120 -n -f1800
+cp -fv build/openrg.img /tftpboot
+cp -fv build/vendor/broadcom/bcm963xx/linux-2.6/boot/bootimg.elf /tftpboot
+
+# for flash boot:
+# echo press enter when minicom and cable are ready...
+# read
+# 
+# echo flash load -u tftp://192.168.1.10/openrg.img > /dev/ttyS0
+# echo -n system reboo > /dev/ttyS0
+

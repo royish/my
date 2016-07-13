@@ -1,0 +1,15 @@
+#!/bin/sh
+
+BASE_NAME=`basename "$1"`
+FULL_FILE_NAME="`pwd`/$1"
+FILE_NAME_24=`echo $FULL_FILE_NAME | sed -e 's/linux-2.6/linux-2.4/'`
+FILE_NAME_26=`echo $FULL_FILE_NAME | sed -e 's/linux-2.4/linux-2.6/'`
+
+TMP_BASE=.tmp.base.$BASE_NAME
+cvs up -p -r 1.1 $1 > $TMP_BASE
+
+#gvim -df $FILE_NAME_24 $TMP_BASE $FILE_NAME_26
+xxdiff $FILE_NAME_24 $TMP_BASE $FILE_NAME_26
+
+rm -f $TMP_BASE
+

@@ -1,0 +1,66 @@
+#!/bin/sh
+date=` date +%y%m%d_%a_%H_%M`
+bck=/net/fs/arch/home/$USER/backup/$date
+bck1=/home/$USER/backup/$date
+bck_file=$bck/backup_log.txt
+diff=$bck/backup_diff.diff
+is_bckfile=0
+
+usage()
+{
+    echo "Usage: $0 [file]"
+}
+
+logecho()
+{
+    echo $1
+    if [ "$is_bckfile" == "0" ];then
+	echo $1 > $bck_file
+    else
+	echo $1 >> $bck_file
+    fi
+    is_bckfile=1
+}
+
+log()
+{
+    logecho "Backup log"
+    logecho "------------------"
+    logecho "Date: `date`"
+    logecho "Root: `pwd`"
+    logecho "------------------"
+    logecho "Files:"
+}
+
+get_files()
+{
+    if [ "$1" == "-h" ]; then
+	usage
+	exit
+    fi
+
+    if [ "$1" != "" ]; then
+	files=`cat $1 | awk '{print $2}'`
+    else
+	files=`jcvs up | awk '{print $2}'`
+    fi
+}
+
+rm -rf $bck
+rm -rf $diff
+mkdir $bck
+get_files $1
+log
+echo "backing up to dir $bck ..."
+for f in $files ;do
+    if [ -f $f ]; then
+	logecho "$f --> $bck/$f"
+	install -v -D $f $bck/$f
+	cvs diff -uN $f >> $diff
+    else
+	logecho "$f --> Removed"
+    fi
+done
+echo $bck > /tmp/cvsbackup.txt
+echo -e "\t finished !"
+

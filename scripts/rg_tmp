@@ -1,0 +1,38 @@
+#!/bin/bash
+
+C_RED='\033[1;31m'
+C_GREEN='\033[1;32m'
+C_YELLOW='\033[1;33m'
+C_BLUE='\033[1;34m'
+C_PURPLE='\033[1;35m'
+C_CYAN='\033[1;36m'
+C_WHITE='\033[1;37m'
+C_UNDERLINE='\033[4;37m'
+C_BLACK='\033[1;38m'
+C_DEF='\033[0m'
+
+cd
+
+for tree in `ls -d *.rg`; do
+    #if [ -L $tree/Makefile ]; then
+    #  TAG="`file $tree/Makefile | sed -e 's%.*/\(rg.[^/]*\).*%\1%'`"
+    #  TAG="»»$TAG"
+    #else
+      TAG=`cvs stat $tree/Makefile | grep Tag | sed -e 's/(none)/dev ()/' | sed -e 's/ *Sticky Tag:[^b(]\(.*\) (.*/\1/'`
+    #fi
+
+    printf "$C_GREEN%-11s$C_PURPLE%-18s$C_DEF%-24s\n" $tree $TAG "$TIME"
+
+    for conf in `ls $tree/b*/config 2> /dev/null`; do
+        if [ ! -L `dirname $conf` ]; then
+	    CONF=`cat $conf | \
+	        sed -e "s%BUILD=[^ ]*%\\\\$C_YELLOW&\\\\$C_DEF%g" \
+		    -e "s%DIST=[^ ]*%\\\\$C_UNDERLINE&\\\\$C_DEF%g" `
+	    printf "\t\t$CONF\n"
+	fi
+    done
+
+    #    TIME=`grep RG_COMPILE_TIME $tree/pkg/include/tech_info.h | sed -e 's%.*"[^ ]* \(.*\)".*%\1%'`
+    
+done
+

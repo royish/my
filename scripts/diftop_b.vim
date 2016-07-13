@@ -1,0 +1,10 @@
+:set ea
+:normal gg
+:set fdc=0
+:setf c
+:wincmd l
+:normal gg
+:set fdc=0
+:setf c
+:let b:match_words='<<<<<<<:=======:>>>>>>>.*,'
+:normal :<bs>

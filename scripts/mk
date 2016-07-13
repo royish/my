@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+
+nice -18 ionice -c 3 /usr/bin/make $*  
+x=$PIPESTATUS
+if (($x)); then
+  rt beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+else
+  rt beep -f1000 -l120 -n -f1400 -l120 -n -f1200 -l120 -n -f1600 -l120 -n -f1800
+  #xmessage -center -default okay make in `pwd` succeeded at `date` &
+fi
+exit $x

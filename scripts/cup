@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cvs -q up -dP $* 2>&1 | ~/my/scripts/colorup.pl
+

@@ -1,0 +1,7 @@
+while [ "$i" != 255 ]; do
+ifconfig eth1 down
+macchanger -r eth1
+pump -i eth1 --no-gateway --no-dns
+let "i = i + 1"
+killall -9 pump
+done

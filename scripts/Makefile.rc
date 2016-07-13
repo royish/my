@@ -1,0 +1,5 @@
+JINST= jinstall -o royi -g cvs
+
+install:
+	$(JINST) -m 0644 .bash_aliases .bashrc ~/
+

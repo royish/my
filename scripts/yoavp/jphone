@@ -1,0 +1,4 @@
+# search if an unknown phone number belongs to anyone in jungo
+cd ~/project/db
+cvs -q up users.csv
+cut -d, -f 1,12,13,14 users.csv | grep --color=always $1

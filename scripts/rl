@@ -1,0 +1,82 @@
+#!/bin/bash
+. /usr/local/bin/jtools_functions.sh
+
+D=`jpwdroot`
+if [ -z "$1" ]; then
+    BUILD=`ls -l $D/build 2> /dev/null | sed -e 's%.*/build\.\([^/]*\).*%\1%'`
+else
+    TEMP=`ls -l $D/build.$1 2> /dev/null`
+    if [ "$TEMP" != "" ]; then
+      BUILD=$1
+    else
+      BUILD=`ls -l $D/build 2> /dev/null | sed -e 's%.*/build\.\([^/]*\).*%\1%'`
+      EXT=_$1
+    fi
+fi
+if [ "$2" != "" ]; then
+  EXT=_$2
+fi
+dir=$D/build.$BUILD
+tree=`pwd | sed "s/.*\/\(.*\.rg\).*/\1/"`
+ver=`$dir/pkg/build/rg_version_info -c 2> /dev/null`
+if [ -z $ver ] ; then
+    printf "Build \"$BUILD\" in tree \"$tree\" must not be compiled...\n"
+    exit -1
+fi
+
+rg=$ver/$BUILD/$tree/openrg$EXT
+img=$ver/$BUILD/$tree/openrg$EXT.img
+rmt=$ver/$BUILD/$tree/openrg$EXT.rmt
+fac=$ver/$BUILD/$tree/rg_factory$EXT
+elf=$ver/$BUILD/$tree/bootimg$EXT.elf
+
+
+cd /tftpboot
+mkdir $ver 2> /dev/null
+mkdir $ver/$BUILD 2> /dev/null
+mkdir $ver/$BUILD/$tree 2> /dev/null
+
+cp $dir/pkg/main/openrg $rg
+cp $dir/os/openrg.img $img
+cp $dir/openrg.rmt $rmt
+cp $dir/pkg/main/rg_factory $fac
+elf_file=$dir/vendor/broadcom/bcm963xx/linux-2.6/boot/bootimg.elf
+if [ "`ls -l $elf_file 2> /dev/null`" != "" ]; then
+  cp $elf_file $elf
+  rt chmod 777 $elf
+  unlink bootimg.elf
+  ln -sf $elf bootimg.elf
+  ls --color=auto -la bootimg.elf
+fi
+elf_file1=$dir/pkg/kernel/linux/boot/image.elf
+if [ "`ls -l $elf_file1 2> /dev/null`" != "" ]; then
+  cp $elf_file1 $elf
+  rt chmod 777 $elf
+  unlink bootimg.elf
+  ln -sf $elf bootimg.elf
+  ls --color=auto -la bootimg.elf
+fi
+
+rt chmod 777 $rg
+rt chmod 777 $img
+rt chmod 777 $rmt
+rt chmod 777 $fac
+
+unlink openrg 
+unlink openrg.img 
+unlink openrg.rmt 
+unlink rg_factory
+
+ln -sf $rg openrg
+ln -sf $img openrg.img
+ln -sf $rmt openrg.rmt
+ln -sf $fac rg_factory
+
+ls --color=auto -la openrg  
+ls --color=auto -la openrg.img  
+ls --color=auto -la rg_factory  
+ls --color=auto -la openrg.rmt
+
+rt unlink /var/www/openrg.rmt 
+rt ln -sf /tftpboot/$rmt /var/www/openrg.rmt
+ls --color=auto -la /var/www/openrg.rmt

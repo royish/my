@@ -1,0 +1,11 @@
+#!/bin/bash
+. /usr/local/bin/jtools_functions.sh
+
+pwd=`pwd`
+cdr
+cd pkg/language
+make lang_merge_to_csv
+make merge_to_csv
+jcdflip
+g all_language_files.csv
+cd $pwd

@@ -1,0 +1,3 @@
+#10.71.2.71
+#rdesktop -f -D -T "laptop" -g 1280x978 -a 16 -u "Royi" -p "" -r sound:remote royil &
+rdesktop -f -D -K -T "laptop" -g 1280x978 -a 16 -u "Royi" -p "" -r sound:remote royil &

@@ -1,0 +1,1 @@
+rt jtcpgen --wan eth2 --lan eth1 --napt --dut-wan-ip 192.168.61.9 --base-port 5001 --mtu 1500 -t 5000 --dut-wan-mac 1e:ab:e6:fe:c1:29 --dut-lan-mac 12:11:8d:64:b1:99 --job --up -n 4

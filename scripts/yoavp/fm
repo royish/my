@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# fast make specific module
+
+for i in $*; do
+    sake -C "pkg/$i"
+    if [ "$?" -ne "0" ]; then
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in pkg/$i"
+	#beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+	exit -1
+    fi
+done
+
+sake -C pkg/igmp
+if [ "$?" -ne "0" ]; then
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in pkg/kernel/one_module"
+    #beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+    exit -1
+fi
+
+#beep -f1000 -l120 -n -f1400 -l120 -n -f1200 -l120 -n -f1600 -l120 -n -f1800
+cp -fv build/pkg/igmp/igmp_proxy_mod.o /tftpboot
+
+echo press enter when minicom and cable are ready...
+read
+
+#@@@ telus version
+
+echo mount -t cramfs_modfs modfs /mnt/modfs > /dev/ttyS0
+echo insmod lib/modules/bcm963xx_eth_mod.o > /dev/ttyS0
+
+echo cd lib/modules > /dev/ttyS0
+echo rm igmp_proxy_mod.o > /dev/ttyS0
+
+echo ifconfig bcm0 192.168.1.253 > /dev/ttyS0
+echo tftp -g 192.168.1.10 -r igmp_proxy_mod.o > /dev/ttyS0
+echo chmod +x igmp_proxy_mod.o > /dev/ttyS0
+
+echo cd > /dev/ttyS0
+echo -n openrg > /dev/ttyS0

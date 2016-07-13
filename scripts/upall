@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo `date`
+for tree in `ls -d ~/dev/$1/*.rg`; do
+  echo $tree
+  cd $tree
+  uptree
+done ;

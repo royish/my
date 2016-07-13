@@ -1,0 +1,3 @@
+
+#xmessage -center done &
+beep -f880 -l120 -n -f1320 -l120 -n -f1100 -l120 -n -f1540 -l120 -n -f1760

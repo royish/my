@@ -1,0 +1,1 @@
+rt jtcpgen --wan wanbr --lan lanbr --wan-fake-ip 192.168.61.99 --lan-fake-ip 192.168.1.99 --napt --dut-wan-ip 192.168.61.9 --base-port 5001 --mtu 1500 -t $1 --dut-wan-mac 12:64:af:d0:0e:83 --dut-lan-mac 1c:80:dc:3b:ce:db --job --down -n $2

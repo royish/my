@@ -1,0 +1,6 @@
+cd ~/project/tools/jboard
+cvs -q up boards.csv
+# @@@ may need to change 7->8 
+g -f boards.csv +/^\\\([^,]*,\\\)\\\{7\\\},
+jboard status
+

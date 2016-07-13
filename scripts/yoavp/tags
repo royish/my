@@ -1,0 +1,73 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+DEV_RCV	not/gen.c	5;"	d	file:
+DEV_SEND	not/gen.c	4;"	d	file:
+DST_IP	not/gen.c	2;"	d	file:
+IndexSearcher	not/snmp_table.cc	/^    IndexSearcher(string s) : idx(s) {}$/;"	f	class:IndexSearcher
+IndexSearcher	not/snmp_table.cc	/^class IndexSearcher$/;"	c	file:
+IsUpperChar	not/snmp_table.cc	/^bool IsUpperChar(char c) { return isupper(c); }$/;"	f
+PORT	not/gen.c	3;"	d	file:
+PPS_TO_MB	not/gen.c	30;"	d	file:
+SPC	not/snmp_table.cc	9;"	d	file:
+SRC_IP	not/gen.c	1;"	d	file:
+WAIT_SECS	not/gen.c	6;"	d	file:
+abs_path	da	/^function abs_path$/;"	f
+checksum	not/gen.c	/^static u32 checksum(unsigned char *buf, int nbytes, u32 sum)$/;"	f	file:
+clean_exit	pong	/^clean_exit()$/;"	f
+da_ci	da	/^function da_ci$/;"	f
+da_diff	da	/^function da_diff$/;"	f
+da_get	da	/^function da_get$/;"	f
+da_grep	da	/^function da_grep$/;"	f
+da_help	da	/^function da_help$/;"	f
+da_loop	da	/^function da_loop$/;"	f
+da_pull	da	/^function da_pull$/;"	f
+da_push	da	/^function da_push$/;"	f
+da_rep	da	/^function da_rep$/;"	f
+da_stat	da	/^function da_stat$/;"	f
+da_sub	da	/^function da_sub$/;"	f
+do_stack_trace	crash_analyze_k.pl	/^sub do_stack_trace$/;"	s
+do_stack_trace	crash_analyze_u.pl	/^sub do_stack_trace$/;"	s
+do_status	da.pl	/^sub do_status {$/;"	s
+dump_syms	crash_analyze_k.pl	/^sub dump_syms$/;"	s
+dump_syms	crash_analyze_u.pl	/^sub dump_syms$/;"	s
+dynamic_map_add	crash_analyze_k.pl	/^sub dynamic_map_add$/;"	s
+dynamic_map_add	crash_analyze_u.pl	/^sub dynamic_map_add$/;"	s
+err	not/gen.c	/^void err(char *reason)$/;"	f
+errors	not/gen.c	/^int sent, received, errors;$/;"	v
+file_read_lines	da.pl	/^sub file_read_lines$/;"	s
+find_addr	crash_analyze_k.pl	/^sub find_addr$/;"	s
+find_addr	crash_analyze_u.pl	/^sub find_addr$/;"	s
+find_darcs_rep	da	/^function find_darcs_rep$/;"	f
+gen_addr_line	crash_analyze_k.pl	/^sub gen_addr_line$/;"	s
+gen_addr_line	crash_analyze_u.pl	/^sub gen_addr_line$/;"	s
+help	crash_analyze_k.pl	/^sub help$/;"	s
+help	crash_analyze_u.pl	/^sub help$/;"	s
+help	not/gen.c	/^void help(void)$/;"	f
+idx	not/snmp_table.cc	/^    string idx;$/;"	m	class:IndexSearcher	file:
+if_sock	not/gen.c	/^static int if_sock(char *device_name)$/;"	f	file:
+iface_get_id	not/gen.c	/^static int iface_get_id(int fd, char *device)$/;"	f	file:
+load_symbols	crash_analyze_k.pl	/^sub load_symbols$/;"	s
+load_symbols	crash_analyze_u.pl	/^sub load_symbols$/;"	s
+main	crash_analyze_k.pl	/^sub main$/;"	s
+main	crash_analyze_u.pl	/^sub main$/;"	s
+main	not/gen.c	/^int main(int argc, char **argv)$/;"	f
+main	not/snmp_table.cc	/^int main(int argc, char **argv)$/;"	f
+operator ()	not/snmp_table.cc	/^    bool operator() (const pair<string, list<string> > & x) const {$/;"	f	class:IndexSearcher
+parse_input	crash_analyze_k.pl	/^sub parse_input$/;"	s
+parse_input	crash_analyze_u.pl	/^sub parse_input$/;"	s
+pkt_init	not/gen.c	/^static int pkt_init(char *pkt, in_addr_t src_addr, in_addr_t dst_addr,$/;"	f	file:
+pkt_rx	not/gen.c	/^char pkt_rx[1600];$/;"	v
+pkt_tx	not/gen.c	/^char pkt_tx[1600];$/;"	v
+put_data	not/gen.c	/^static inline void put_data(u8 *pkt, int pkt_size, struct timeval *tm,$/;"	f	file:
+read_sub	da.pl	/^sub read_sub {$/;"	s
+received	not/gen.c	/^int sent, received, errors;$/;"	v
+recv_pkt	not/gen.c	/^static inline void recv_pkt(int sock, in_addr_t dst_addr, u16 dst_port,$/;"	f	file:
+sent	not/gen.c	/^int sent, received, errors;$/;"	v
+str_to_mac	not/gen.c	/^static void str_to_mac(ether_mac_t *mac, char *str)$/;"	f	file:
+symbol_table_create	crash_analyze_k.pl	/^sub symbol_table_create$/;"	s
+symbol_table_create	crash_analyze_u.pl	/^sub symbol_table_create$/;"	s
+wrapsum	not/gen.c	/^static u32 wrapsum(u32 sum)$/;"	f	file:

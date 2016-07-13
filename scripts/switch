@@ -1,0 +1,13 @@
+cd
+mkdir backup_royi
+cp $HOME/.bashrc backup_royi/.bashrc
+cp $HOME/.bash_profile backup_royi/.bash_profile
+cp $HOME/.gvimrc backup_royi/.gvimrc
+cp $HOME/.inputrc backup_royi/.inputrc
+cp $HOME/.prompt backup_royi/.prompt
+cp $HOME/.shrc backup_royi/.shrc
+
+cp /home/shaulir/my/dot/.bashrc /home/shaulir/my/dot/.bash_profile /home/shaulir/my/dot/.gvimrc /home/shaulir/my/dot/.inputrc /home/shaulir/my/dot/.prompt /home/shaulir/my/dot/.shrc $HOME 
+
+sudo cp /home/shaulir/my/dot/royi.vim /usr/share/vim/vimcurrent/colors/royi.vim
+sudo cp /home/shaulir/my/dot/cscope_maps.vim /usr/share/vim/vimcurrent/plugin/cscope_maps.vim

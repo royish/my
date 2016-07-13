@@ -1,0 +1,4 @@
+rt ifconfig eth1 0.0.0.0 down
+rt ifconfig eth1:1 0.0.0.0 down
+rt ifconfig eth2 0.0.0.0 down
+jnetwork start

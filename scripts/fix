@@ -1,0 +1,6 @@
+%s/BRID/BRIDGE/g
+%s/ROUT/ROUTE/g
+%s/-BI/BIDIR/g
+%s/-DO/-DOWN/g
+%s/15-/1500-/g
+%s/12-/128-/g

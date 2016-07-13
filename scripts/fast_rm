@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+TMPDIR=/var/tmp/fast_delete
+
+mkdir -p $TMPDIR
+for i in $@; do
+    mv $i $TMPDIR/`echo $i | sed "s%/$%%"`.`date +"%d-%b-%Y_%T"`.$$
+done

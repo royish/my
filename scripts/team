@@ -1,0 +1,8 @@
+#awk -F, "\$25==\"$1\" && \$2==1 {print \$1}" ~/project/db/users.csv
+# bug in the above - some users have field values like: "whatever, bla" which
+# ruins the field count
+# unreadable fix:
+grep "^[^,]*,1,\(\(\"[^\"]*\",\)\|\([^\",]*,\)\)\{21\}$1," \
+	~/project/db/users.csv | \
+	awk -F, '{print $1}'
+

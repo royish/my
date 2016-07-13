@@ -1,0 +1,11 @@
+#!/bin/bash
+
+printf "jumps in vers mismatches:\n"
+printf "=========================\n"
+for file in $(cat upnp.files) ; do \
+  cat revs_clean.patch | \
+  grep $file | \
+  sed 's/.* -j \(.*\) -j \(.*\) \(.*\)/\1 \2 \3/g'  | \
+  awk -f ver.awk; \
+done
+printf "=======================\n\n\n"

@@ -1,0 +1,4 @@
+PROCS=`ps -eflw | grep cvs | grep -v grep | awk '{print $4}'`
+for PROC in $PROCS ; do
+  rt ls --color -l /proc/$PROC/cwd
+done

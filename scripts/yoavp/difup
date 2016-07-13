@@ -1,0 +1,12 @@
+#/bin/sh
+
+if [[ $# != 1 ]]; then
+	echo "compare clean working version to repository version"
+	echo "Usage: difup <filename>";
+	exit;
+fi
+
+WORK_REV=`cvs stat $1 | awk '/Working/ {print $3;}'`
+LATEST_REV=`cvs stat $1 | awk '/Repository/ {print $3;}'`
+
+cvsdiff -r $WORK_REV -r $LATEST_REV $1

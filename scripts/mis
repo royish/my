@@ -1,0 +1,12 @@
+#!/bin/bash
+
+printf "Current ver mismatches:\n"
+printf "=======================\n"
+for file in $(cat upnp.files) ; do \
+  TAG=`cvs stat $file | grep Tag | sed -e 's/(none)/dev ()/' | sed -e 's/.*revision: \(.*\))/\1/'`
+  rev1=`cat revs_clean.patch | grep -m 1 $file | sed 's/.* -j \(.*\) -j \(.*\) \(.*\)/\1/g'`
+  if [ "$TAG" != "$rev1" ]; then
+    printf "$file $TAG -> $rev1\n"
+  fi
+done
+printf "=======================\n\n\n"

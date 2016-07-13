@@ -1,0 +1,7 @@
+#!/bin/bash
+
+/usr/bin/make $@
+ret=$?
+notify $ret &
+
+exit $ret

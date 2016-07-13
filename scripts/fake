@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# fast make
+# usage example: fake firewall main
+
+. /usr/local/bin/jtools_functions.sh
+
+for i in $*; do
+    if [ "$i" == "web_mng" ] ; then
+        cdr
+	rm -rf build/pkg/build/disk_image/ramdisk_dir//home
+    fi
+    cdr "pkg/"$i && sake && sake ramdisk
+    if [ "$?" -ne "0" ]; then
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in " `pwd`
+	beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+	exit -1
+    fi
+done
+
+cdr "pkg/main" && sake && sake ramdisk
+if [ "$?" -ne "0" ]; then
+  echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in " `pwd`
+  beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+  exit -1
+fi
+
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: going to pkg/build"
+cdr pkg/build
+sake ramdisk && cdr os && sake && img
+
+if (($PIPESTATUS)); then
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@ fake: error in " `pwd`
+    beep -f800 -l120 -n -f700 -l150 -n -f500 -l180 -n -f300
+else
+    beep -f1000 -l120 -n -f1400 -l120 -n -f1200 -l120 -n -f1600 -l120 -n -f1800
+fi
+

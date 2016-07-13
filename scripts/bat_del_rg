@@ -1,0 +1,1 @@
+sbat 'rt rm -rf `find /home/bat/bat/ -type d -maxdepth 2 -mindepth 2 -name rg`'

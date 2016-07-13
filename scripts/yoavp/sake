@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# silent cake (silent in sound, printouts are as usual)
+
+make $* 2>&1 | ~/scripts/colormake.pl -1
+exit $PIPESTATUS

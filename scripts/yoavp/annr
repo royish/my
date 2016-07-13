@@ -1,0 +1,11 @@
+#/bin/sh
+
+if [[ $# != 2 ]]; then
+	echo "Usage: annr <rev-num> <filename>";
+	echo "rev_num does not include the opening '1.'";
+	exit;
+fi
+
+REV=`echo 1.$1`
+cvs ann -r $REV $2 | gvim -s /home/shmulik/bin/ann.scr -
+

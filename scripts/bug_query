@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ $# -eq 0 -o "$1" = "w" ]; then
+#we need `id -u` for the assignee specification.
+USERID=`grep "^$USER\>" ~/project/db/users.csv | cut -d, -f6`
+COND="assigned_to=\"$USERID\" AND bug_status in ('NEW','UNCONFIRMED','ASSIGNED','REOPENED') and bug_type!='Milestone'"
+if [ "$1" = "w" ]; then COND="$COND AND LOCATE('work', keywords)>0"; fi
+else # args like: tmp/bugs/B83185 tmp/bugs/B83363 tmp/bugs/B83715
+IFS="," # affect $* result
+# using sed, but maybe shell substitutions of some kind are available too?
+BUGS=`echo "(\"$*\")" | sed 's/[^'"$IFS"'("]*B//g; s/'"$IFS"'/\",\"/g'`
+COND="bug_id in $BUGS"
+fi
+
+TMP_SEP="*" # used to replace spaces temporarily until tabs are columnized
+echo SELECT bug_id, bug_status, REPLACE \(short_desc, \' \', \'$TMP_SEP\'\) as short_desc FROM bugs WHERE "$COND" ORDER BY bug_severity, priority| mysql -h mysql -ubugzilla_read -p`</usr/local/jungo/etc/db/bugzilla_read` bugs_rg | tr $'\t' ' ' | column -t | tr "$TMP_SEP" ' '
+

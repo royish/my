@@ -1,0 +1,7 @@
+#!/bin/bash
+
+D=$RANDOM$RANDOM
+
+mkdir -p /tmp/trash/$D
+mv "$@" /tmp/trash/$D
+nice -19 ionice -c 3 rm -rf /tmp/trash/$D &

@@ -1,0 +1,25 @@
+#!/bin/sh
+
+C_GREEN='\033[1;32m'
+
+PARAMS=$@
+TREE=`jpwdroot`
+AUTOTEST_BUILD=$TREE/build/pkg/autotest
+AUTOTEST=$TREE/pkg/autotest
+ENV=$HOME/project/tools/qa/bat/env
+DIST=`cat $TREE/build/config 2> /dev/null |\
+      sed -e 's%.*DIST=\([^ ]*\).*%\1%'`
+env_conf=`cat $ENV/base_dists.csv | grep DIST | grep conf |\
+          grep $DIST | sed -e 's%.*env\.conf\.\([^,]*\).*%\1%' 2> /dev/null`
+
+if [ "$env_conf" != "" ]; then
+  ENV_CONF=$ENV/env.conf.$env_conf
+else
+  printf "could not find env.conf!\ntried:
+          env_conf=cat $ENV/base_dists.csv | grep DIST | grep conf | grep $DIST"
+  echo got $env_conf
+  exit 1
+fi
+
+printf "$C_GREEN=========\nRG_ROOT=$TREE  rt $AUTOTEST_BUILD/sync_autotest -e $ENV/env.conf.bat_sync_basic,$ENV_CONF -S $AUTOTEST_BUILD/util/sync_serial_agent --debug $PARAMS\n=========\n" 
+RG_ROOT=$TREE  rt $AUTOTEST_BUILD/sync_autotest -e $ENV/env.conf.bat_sync_basic,$ENV_CONF -S $AUTOTEST_BUILD/util/sync_serial_agent --debug $PARAMS

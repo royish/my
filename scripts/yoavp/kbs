@@ -1,0 +1,1 @@
+while (true) ; do nice -18 kbuildsycoca --noincremental ; sleep 720 ; done

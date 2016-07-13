@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# Wrapper around make, to colorize it's output and pipe through less.
+# Jumps to the first gcc error that occurs during the build process.
+#
+
+#SIZE=`/bin/stty size`
+SIZE=-1
+/usr/bin/make $* 2>&1 | colormake.pl $SIZE

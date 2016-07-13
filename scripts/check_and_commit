@@ -1,0 +1,29 @@
+#!/bin/sh
+
+function usage()
+{
+cat >&2 << EOF
+Make sure files don't contain any personal debug messages (e.g. MY_DBG) before commiting them.
+Usage: `basename $0` RXXXX|new FILE [FILE]...
+EOF
+    exit -1
+}
+
+REVIEW=$1
+shift 1
+FILES=$@
+[ -z "$FILES" ] && usage
+
+SYMS="MY_DBG"
+
+grep $SYMS $FILES > /dev/null
+GREP=$?
+
+if [ $GREP -eq 0 ]; then
+  echo "Some files contain $SYMS"
+  exit -1
+elif [ $GREP -ne 1 ]; then
+  exit -1
+fi
+
+review commit $REVIEW $FILES

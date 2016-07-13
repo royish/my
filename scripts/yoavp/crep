@@ -1,0 +1,2 @@
+# script and not alias so it can be easily used with xargs
+grep --exclude=tags -n --color=always "$@"

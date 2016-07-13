@@ -1,0 +1,13 @@
+#!/bin/bash
+#xmessage -center done &
+
+if (($1)); then
+  for ((i=4; i>=0; i--)) ; do
+    beep -f $((300 + $i * 200)) -l $((110 + 40 * (4 - $i)))
+  done
+else
+  for ((i=0; i<=4; i++)) ; do
+    beep -f $((1320 + $i * 220)) -l $((30 + 10 * $i)); 
+  done
+fi
+

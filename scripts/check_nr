@@ -1,0 +1,10 @@
+#!/bin/bash
+
+write() {
+  echo $1 > /dev/ttyaa;
+  ret=$PIPESTATUS;
+  sleep 1;
+  return $ret;
+}
+
+write "system shell" && write "cat /proc/sys/fs/file-nr" && write "exit"

@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# this one is for merge reviews
+
+TAG_BASE=branch-vx_route-start
+TAG_BRANCH=branch-vx_route-end
+TAG_DST_BEFORE=merge_before-branch-vx_route-dev
+TAG_DST_AFTER=merge-branch-vx_route-dev
+
+
+
+
+CVS_NAME=`echo $1 | sed -e 's%^rg/%%'`
+FILE_NAME=`basename $CVS_NAME`
+
+TMP_BASE=.tmp.base.$FILE_NAME
+cvs up -p -r $TAG_BASE $CVS_NAME > $TMP_BASE
+
+TMP_BRANCH=.tmp.branch.$FILE_NAME
+cvs up -p -r $TAG_BRANCH $CVS_NAME > $TMP_BRANCH
+
+TMP_DST_BEFORE=.tmp.dst-before.$FILE_NAME
+cvs up -p -r $TAG_DST_BEFORE $CVS_NAME > $TMP_DST_BEFORE
+
+TMP_RESULT=.tmp.result.$FILE_NAME
+cvs up -p -r $TAG_DST_AFTER $CVS_NAME > $TMP_RESULT
+
+xxdiff $TMP_BASE $TMP_DST_BEFORE $TMP_RESULT &
+xxdiff $TMP_BASE $TMP_BRANCH $TMP_RESULT
+rm -f $TMP_BRANCH $TMP_BASE $TMP_DST_BEFORE $TMP_RESULT
+

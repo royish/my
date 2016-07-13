@@ -1,0 +1,22 @@
+#!/bin/sh
+
+TEST=$1
+shift 1
+TREE=`jpwdroot`
+ENV=$HOME/project/tools/qa/bat/env
+DIST=`cat $TREE/build/config 2> /dev/null |\
+      sed -e 's%.*DIST=\([^ ]*\).*%\1%'`
+env_conf=`cat $ENV/base_dists.csv | grep DIST | grep conf |\
+	  grep -m 1 DIST=$DIST |\
+	  sed -e 's%.*env\.conf\.\([^,]*\).*%\1%' 2> /dev/null`
+
+if [ "$env_conf" != "" ]; then
+  ENV_CONF=$ENV/env.conf.$env_conf
+else
+  printf "could not find env.conf!\ntried:
+          env_conf=cat $ENV/base_dists.csv | grep DIST | grep conf | grep $DIST"
+  echo got $env_conf
+  exit 1
+fi
+
+RG_ROOT=$TREE at_run -d $TREE -a "-e $ENV/env.conf.bat_sync_basic,$ENV_CONF $*" -t $TEST

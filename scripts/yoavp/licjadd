@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Usage:
+#  $1 lic_file
+#  $2 src/bin
+#  $3 jpkg
+
+if [ 0 == $# ]; then
+  echo "usage: $0 <lic-file> <src|bin> <jpkg>"
+  exit
+fi
+
+D=`jpwdroot`
+cd $D
+LIC=`head -4 pkg/jpkg/install/$1 | grep LICSTR | sed -e 's%LICSTR: %%'`
+#printf "LIC=$LIC\n"
+#INFO=`build/pkg/license/makelic_rg info "$LIC"`
+#printf "INFO:\n$INFO\n"
+COMMAND=`build/pkg/license/makelic_rg info "$LIC" | grep makelic_rg | sed -e "s%-jpkg_$2 '%&$3 %"`
+#printf "build/pkg/license/$COMMAND\n"
+NEW_LIC=`bash -c "build/pkg/license/$COMMAND"`
+VER=`cat pkg/jpkg/install/$1 | grep VERSION | sed -e 's%VERSION: %%'`
+KEY=`build/pkg/license/lic_rg prvkey pkg/jpkg/install/$1`
+#printf "build/pkg/license/makelic_rg createfile pkg/jpkg/install/$1 $VER $NEW_LIC -k \"$KEY\"\n"
+./build/pkg/license/makelic_rg createfile pkg/jpkg/install/$1 $VER $NEW_LIC -k "$KEY"
+cvsdiff pkg/jpkg/install/$1 
+

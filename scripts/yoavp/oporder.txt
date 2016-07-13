@@ -1,0 +1,15 @@
+() [] -> .
+unaries (RTL)
+* / %
++ -
+>> <<
+< >
+== !=
+bitwise AND
+^
+|
+&&
+||
+?: (RTL)
+=  and all other assignments
+,

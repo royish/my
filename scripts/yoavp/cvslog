@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ARGS=`echo $* | sed -e 's%:[^ ]*%%g'`
+cvs -q log $ARGS | gvim -c '%s/\t.*\n/§/g' -c 'set nomodified' +0 - &
+

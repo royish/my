@@ -1,0 +1,2 @@
+g --noplugin -c "set nobk vi='0,<0,h,f0,n/dev/null" "$@"
+clear

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+
+if ( pwd | grep /jmk > /dev/null ) ; then
+  EXT="mak"
+else
+  if ( pwd | grep firewall > /dev/null ) ; then
+    EXT=".[chi]"
+  else
+    if ( pwd | grep "rg\." > /dev/null ) ; then
+      EXT=".[ch]"
+    else
+      EXT=""
+    fi
+  fi
+fi
+
+[ -z "$FIGR_EXT" ] || EXT="$FIGR_EXT" # for all files use export FIGR_EXT='*'
+GREP_OPT=""
+MAX_DEPTH=""
+
+if [ 0 == $# ]; then
+  echo "$0 <regexp> [<grep opt> [<ext> [<max-depth(not-real-any-more)]]]>"
+  exit
+fi
+  
+REGEXP=$1
+if (( 2 <= $# )); then
+  GREP_OPT=$2
+fi
+if (( 3 <= $# )); then
+  EXT=$3
+fi
+if (( 4 > $# )); then
+  GREP_OPT="-r $GREP_OPT"
+  #MAX_DEPTH="-maxdepth $4"
+fi
+
+#echo "find $DIR $MAX_DEPTH -name \"*$EXT\" | xargs grep -n $GREP_OPT \"$REGEXP\" | hil \"$REGEXP\""
+#find $DIR $MAX_DEPTH -name "*$EXT" | xargs grep -n $GREP_OPT "$REGEXP" | hil "$REGEXP"
+
+echo "grep -n --color=always --exclude=tags --include \"*$EXT\" $GREP_OPT \"$REGEXP\" . | hif"
+      grep -n --color=always --exclude=tags --include "*$EXT" $GREP_OPT "$REGEXP" . | hif

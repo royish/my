@@ -1,0 +1,7 @@
+#! /bin/bash
+
+tmpfile=/tmp/`basename $1`.tmp.c
+
+git show openrg:$1 > $tmpfile
+$DIFFPROG $tmpfile $1
+rm -f $tmpfile

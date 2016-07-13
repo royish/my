@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if [[ $# != 2 ]]; then
+	echo "usage: $0 <file:rg/...> <revision>"
+	exit;
+fi
+
+source /usr/local/bin/project_config.sh
+
+file_path=$1
+if [[ -z $file_path ]]; then
+	exit;
+fi
+rev=$2
+if [[ -z $rev ]]; then
+	exit;
+fi
+
+fn=`basename "$file_path"`
+dir=`dirname "$file_path"`
+
+query="
+SELECT reviewid 
+FROM ViewCVS.checkins, ViewCVS.dirs, ViewCVS.files
+WHERE checkins.dirid = dirs.id
+  AND checkins.fileid = files.id
+  AND files.file = '$fn'
+  AND dirs.dir = '$dir'
+  AND revision = '$rev'
+"
+
+mysql_cmd="mysql -N -h mysql -uviewcvs_read -p$DAILY_PASSWORD"
+
+echo R`echo $query | $mysql_cmd`

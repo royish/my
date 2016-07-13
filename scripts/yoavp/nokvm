@@ -1,0 +1,2 @@
+# rt kbdrate -r 30
+xset r rate 224 56

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+printf "====\n"
+10 10 $@
+ret=$PIPESTATUS
+printf "done.\n"
+printf "====\n"
+exit $ret

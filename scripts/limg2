@@ -1,0 +1,87 @@
+#!/bin/bash
+
+D=`jpwdroot`
+if [ -z "$1" ]; then
+    printf "error\n"
+    exit -1
+fi
+# I assume build is like build.ABC
+TEMP=`ls -l $D/build.$1 2> /dev/null`
+if [ "$TEMP" != "" ]; then
+  BUILD=build.$1
+else
+  BUILD=`ls -l $D/build 2> /dev/null | sed -e 's%.*\/\([^/]*\)%\1%'`
+  CUSTOM=$1
+fi
+if [ "$2" != "" ]; then
+  CUSTOM=$2
+fi
+build_dir=$D/$BUILD
+tree=`basename $D`
+ver=`cat $D/pkg/include/rg_version_data.h 2> /dev/null | \
+  grep -w RG_VERSION | sed -e 's%.*\"\(.*\)\"%\1%'`
+if [ "$tag" != "" ]; then
+ver=`cat $D/pkg/include/rg_version_data.h 2> /dev/null | \
+  grep -w RG_VERSION | sed -e 's%.*\"\(.*\)\"%\1%'`
+fi
+if [ -z $ver ] ; then
+    printf "could not get version\n"
+    exit -1
+fi
+
+path=$ver/$tree/$BUILD
+if [ "$CUSTOM" != "" ]; then
+  path=$path/$CUSTOM
+fi
+
+cd /tftpboot
+
+replace_link() {
+  if [ "`ls -l $path/$2 2> /dev/null`" != "" ]; then
+    unlink $2
+    ln -sf $path/$2
+    ls --color=auto -la $2  
+  fi
+
+  return 0
+}
+rg=$path/openrg
+img=$path/openrg.img
+rmt=$path/openrg.rmt
+rms=$path/openrg.rms
+fac=$path/rg_factory
+elf=$path/image.elf
+vmlinux=$path/vmlinux
+
+cd /tftpboot
+
+unlink openrg 
+unlink openrg.img 
+unlink openrg.rmt 
+unlink openrg.rms 
+unlink rg_factory
+unlink image.elf
+
+ln -sf $rg openrg
+ln -sf $img openrg.img
+ln -sf $rmt openrg.rmt
+ln -sf $rms openrg.rms
+ln -sf $fac rg_factory
+ln -sf $elf image.elf
+
+ls --color=auto -la openrg  
+ls --color=auto -la openrg.img  
+ls --color=auto -la rg_factory  
+ls --color=auto -la openrg.rmt
+ls --color=auto -la openrg.rms
+ls --color=auto -la image.elf
+
+rt unlink /var/www/openrg.rmt 
+rt ln -sf /tftpboot/$rmt /var/www/openrg.rmt
+ls --color=auto -la /var/www/openrg.rmt
+rt unlink /var/www/openrg.rms 
+rt ln -sf /tftpboot/$rms /var/www/openrg.rms
+ls --color=auto -la /var/www/openrg.rms
+
+cd $D
+jstrip /tftpboot/$rg

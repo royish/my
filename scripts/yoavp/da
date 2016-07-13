@@ -1,0 +1,203 @@
+#!/bin/sh
+
+cmd=$1;shift
+
+function abs_path
+{
+	local f=$1
+
+	if [ "$f" == "${f#/}" ]; then
+		# relative path...
+		f="`pwd`/$f"
+	fi
+
+	echo $f
+}
+
+function find_darcs_rep
+{
+	local f=`abs_path "$1"`;shift
+	local d=$f
+
+	while [ "$d" != "/" ]; do
+		if [ -d "$d/_darcs" ]; then
+			break
+		fi
+		d=`dirname $d`
+	done
+
+	if [ "$d" == "/" ]; then
+		echo Darch "repository not found!" >&2
+		exit 1
+	fi
+
+	echo $d
+}
+
+function da_diff
+{
+	local f=`abs_path "$1"`;shift
+	local d=`dirname $f`
+	d=`find_darcs_rep "$d"`
+		
+	echo Rep: $d Path: ${f#$d/}
+
+	gvim -d "$d/_darcs/current/${f#$d}" $f
+}
+
+function da_sub
+{
+	local r
+	if [ "$1" ]; then
+		r="$1";shift
+	else
+		r="."
+	fi
+	if [ -r "$r/.reps" ]; then
+
+		local d=`cat "$r/_darcs/prefs/defaultrepo"`
+		cat "$r/.reps" |\
+		while read s; do
+			#echo "$d/$s" "$r/$s"
+			echo Getting subrepository "$d/$s"
+			darcs get "$d/$s" "$r/$s"
+			da_sub "$r/$s"
+		done
+	fi
+}
+
+function da_get
+{
+	local rep
+	local dir
+
+	# 'parse' arguments to find repository and checkout dir
+	for a in "$@"; do
+		case "$a" in
+			-*) :;;
+			*) 
+			if [ -z "$rep" ]; then
+				rep="$a"
+			else
+				if [ -n "$dir" ]; then
+					echo WARN: more then two arguments for get > /dev/stderr
+				else
+					dir="$a"
+				fi
+			fi
+		esac
+	done
+
+	# repository argument is mandatory!
+	if [ -z "$rep" ]; then
+		echo Reporitory arg not found > /dev/stderr
+		darcs get --help
+		exit 1
+	fi
+
+	# if dir is not specified, darcs will use ./<repository name>
+	if [ -z "$dir" ]; then
+		dir="./`basename $rep`"
+	fi
+	echo found args rep="$rep" dir="$dir"
+	if [ -d "$dir" ]; then
+		echo "ERROR: '$dir' already exists" > /dev/stderr
+		exit 1
+	fi
+
+	darcs get "$@"
+	da_sub "$dir"
+}
+
+function da_loop
+{
+	if [ -r .reps ]; then
+		cat .reps
+	fi
+	echo -da-loop-
+}
+
+function da_ci
+{
+	darcs record -a "$@"
+	for f in `da_loop`; do
+		if [ '-da-loop-' = "$f" ]; then break;fi
+		echo "Committing in the subrepository $f"
+		(cd $f;da ci "$@")
+	done
+}
+
+function da_stat
+{
+	local g
+	if [ -r .reps ]; then
+		echo "^a ./.reps.grep" > .reps.grep
+		cat .reps |\
+		while read s; do
+			echo "^a ./$s/" >> .reps.grep
+		done
+		darcs whatsnew -s "$@" | grep -vf .reps.grep
+	else
+		darcs whatsnew -s "$@" 
+	fi
+	for f in `da_loop`; do
+		if [ '-da-loop-' = "$f" ]; then break;fi
+		echo "Status of the subrepository $f"
+		(cd $f;da s)
+	done
+}
+
+function da_push
+{
+	darcs push "$@"
+	for f in `da_loop`; do
+		if [ '-da-loop-' = "$f" ]; then break;fi
+		echo "Push in the subrepository $f"
+		(cd $f;da push "$@")
+	done
+}
+
+function da_pull
+{
+	darcs pull "$@"
+	for f in `da_loop`; do
+		if [ '-da-loop-' = "$f" ]; then break;fi
+		echo "Push in the subrepository $f"
+		(cd $f;da pull "$@")
+	done
+}
+
+function da_grep
+{
+    grep -nsr "$@" . | grep -v /_darcs/
+}
+
+function da_rep
+{
+	local f=`abs_path "$1"`;shift
+	local d=`find_darcs_rep "$f"`
+	cat $d/_darcs/prefs/repos
+	echo --
+	cat $d/_darcs/prefs/defaultrepo
+}
+
+function da_help
+{
+    echo "da stat|commit|ci|diff|sub|get|push|up|grep|<any standard darcs command:>"
+    darcs --help
+    exit
+}
+
+case "$cmd" in
+	stat|sta|st|s) da_stat "$@";;
+	commit|ci) da_ci "$@";;
+	di|dif|diff) da_diff "$@";;
+	sub) da_sub "$@";;
+	g|ge|get) da_get "$@";;
+	push) da_push "$@" ;;
+	u|up|pull) da_pull "$@";;
+	gr|gre|grep) da_grep "$@";;
+	rep) da_rep "$@";;
+	h|he|hel|help) da_help "$@";;
+	*) darcs $cmd "$@";;
+esac

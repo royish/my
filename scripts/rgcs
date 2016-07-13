@@ -1,0 +1,7 @@
+#!/bin/bash
+
+jrguml stop
+rt killall openrg.uml
+jrguml purge
+jrguml burn
+jrguml start -s

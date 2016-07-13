@@ -1,0 +1,53 @@
+#!/bin/bash
+. /usr/local/bin/jtools_functions.sh
+
+echo cdr
+echo vendors=`ls build/vendor`
+echo cd vendor
+printf "ctags -R $vendors\n"
+
+cdr
+vendors=`ls build/vendor`
+cd vendor
+ctags -R $vedors
+
+echo cdr
+echo cd pkg
+echo ctags -R .
+
+cdr
+cd pkg
+ctags -R .
+
+echo cdr
+echo linux=`ls build/os | grep linux-`
+echo cd os
+echo ctags -R $linux
+
+cdr
+linux=`ls build/os | grep linux-`
+cd os
+ctags -R $linux
+
+
+##!/bin/bash
+## Ctags from Ziv
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=*/pkg/kos/koslet.c"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=*stubs*"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=*.[oa]"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=*.txt"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=*.swp"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=*.tmp"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=*.htm*"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=*.xml*"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=*.diff"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=tags"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=cscope.out"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=build/*"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=pkg/gcc/*"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=pkg/gdb/*"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=pkg/doc/*"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=pkg/cablehome/*"
+##CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=pkg/autotest/*"
+#CTAGS_EXCLUDE="$CTAGS_EXCLUDE --exclude=build.*"
+#ctags $CTAGS_EXCLUDE --links=no -R .

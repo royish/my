@@ -1,0 +1,46 @@
+#! /bin/bash -x
+
+LOCAL_WAN=eth0
+UML_PHY_WAN=eth1
+RUNNNING_USER=`logname`
+
+case "$1" in
+  'up')
+    ifconfig $LOCAL_WAN down
+    tunctl -u $RUNNNING_USER -t lan_uml
+    tunctl -u $RUNNNING_USER -t wan_uml
+    chmod 666 /dev/net/tun
+    ifconfig lan_uml up
+    ifconfig wan_uml up
+    ifconfig $UML_PHY_WAN 0
+    ifconfig $UML_PHY_WAN up
+    brctl addbr wan_br
+    brctl addif wan_br $UML_PHY_WAN
+    brctl addif wan_br wan_uml
+    ifconfig wan_br up
+    
+    ifconfig
+    brctl show
+    route -n
+    ;;
+    
+  'down')
+    brctl delif wan_br $UML_PHY_WAN
+    brctl delif wan_br wan_uml
+    ifconfig wan_br down
+    brctl delbr wan_br
+    ifconfig $UML_PHY_WAN 0 down
+    ifconfig lan_uml 0 down
+    ifconfig wan_uml down
+    tunctl -d lan_uml
+    tunctl -d wan_uml
+    ifconfig $LOCAL_WAN up
+    dhclient $LOCAL_WAN -r
+    dhclient $LOCAL_WAN &
+    ;;
+    
+  *)
+    echo "Error: Need a parameter wether to bring uml network 'up' or 'down'"
+    exit 1
+    ;;
+esac

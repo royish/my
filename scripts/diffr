@@ -1,0 +1,29 @@
+#!/bin/sh
+
+usage()
+{
+    echo "Usage: $0 [file]"
+}
+
+get_files()
+{
+    if [ "$1" == "-h" ]; then
+	usage
+	exit
+    fi
+
+    if [ "$1" != "" ]; then
+	files=`cat $1 | awk '{print $2}'`
+    else
+	usage
+	exit
+    fi
+}
+
+get_files $1
+for f in $files ;do
+    if [ -f $f ]; then
+	cvs diff $f >> $2
+    fi
+done
+

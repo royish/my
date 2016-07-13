@@ -1,0 +1,17 @@
+#!/usr/bin/expect -f
+set timeout 30
+
+log_user 0
+spawn telnet 192.168.1.1
+expect "Username: "
+send "admin\n"
+expect "Password: "
+send "admin\n"
+
+expect "> "
+send "$argv\n"
+log_user 1
+expect "> "
+log_user 0
+send "exit\n"
+send_user "\n"

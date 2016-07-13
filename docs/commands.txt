@@ -1,0 +1,1243 @@
+tftp -g -l /bin/tcpdump -r tcpdump 192.168.100.10
+chmod +x /bin/tcpdump
+./tcpdump -nxi ipsec0 -s 1600 -w /ipsec.dump
+./tcpdump -nxi ipsec0 -s 256 -w /ipsec.dump
+tftp -p 192.168.2.3 -r ipsec.dump -l ./ipsec.dump
+
+tftp -g -l keepalived.conf -r keepalived.conf 192.168.100.10
+tftp -g -l keepalived.conf -r keepalived.conf 192.168.1.10
+
+make -s && f && cp app_test /tftpboot/. && f
+
+make -s && f && cp flash_upgrade_test /tftpboot/. -fv && f
+tftp -g -l test -r test 192.168.1.10
+./test
+
+tftp -g -l flash_upgrade_test -r flash_upgrade_test 192.168.1.10
+chmod +x flash_upgrade_test
+./flash_upgrade_test
+
+tftp -g -l demo -r demo 192.168.1.10
+chmod +x demo
+./demo
+
+tftp -g -l test -r test 192.168.1.10
+chmod +x test
+./test
+
+tftp -g -l rg_conf_proc -r rg_conf_proc 192.168.1.10
+chmod +x rg_conf_proc
+./rg_conf_proc
+
+
+objdump:
+-------
+jobjdump -SDx openrg | g -
+jobjdump -DSlx openrg > openrg.dump
+jobjdump -Sd  --adjust-vma 0xc00a6060 igmp_proxy_mod_24.o > igmp.dump
+
+
+-D - disassemble all
+-x - all headers
+-l - line numbers
+-d - disassemble
+
+It will show whether something is exported or not. g - global, l - local.
+
+UPDATE IMAGE:
+-------------
+make && cp build/openrg.img /tftpboot/ -fv
+
+cp /home/lena/rg.40/build.MONTEJADE/os/openrg.img /tftpboot/.
+
+load -u tftp://192.168.1.10/openrg.img 
+load -u tftp://192.168.1.10/MRA_image.img -s 3
+load -u tftp://192.168.1.10/rgloader.img -s 3
+
+igmp
+----
+http://www.google.com/notebook/public/05952390419827433826/BDSBkSwoQu-vb5LUh
+rt route add -net 224.0.0.0 netmask 240.0.0.0 dev eth1
+    *  client (sender)
+
+iperf -c 224.0.55.55 -u -T 32 -t 100 -i 1
+
+    * server (receiver)
+
+iperf -s -u -B 224.0.55.55 -i 1
+
+
+How to Compile Locally: (and link something to it)
+-----------------------
+TARGET=demo1
+O_OBJS_demo1=demo1.o
+L_OBJS_demo1=traceabilityAPI.a
+LDLIBS:=$(OPENRG_LDLIBS) 
+
+OX_OBJS = O files, that can export functions.
+O_OBJS = simple objects of execution.
+
+snmp walk:
+----------
+snmpwalk -c public 192.168.1.1
+
+shell stuff:
+------------
+for i in `ls *`; do mv ${i} ${i}_ ; done
+ls -lh - to view in Mega
+
+
+Directories:
+-----------
+pkg/build/disk_image/cramfs_dir/bin
+
+mount -t type device dir
+mount -t proc proc proc
+mount -t modfs /mnt/modfs modfs
+insmod am5120sw_mod.o
+ifconfig -a promisc
+
+dmesg
+rt mount -t vfat /dev/sdb1 /mnt/usb
+
+The  file  /etc/fstab (see fstab(5)), may contain lines describing what devices
+are usually mounted where, using which options. This file is used in three ways:
+
+(i) The command mount -a [-t type] [-O optlist] (usually given in a bootscript)
+causes all file  systems  mentioned  in  fstab  (of  the proper  type and/or
+having or not having the proper options) to be mounted as indicated, except for
+those whose line contains the noauto keyword. Adding the -F option will  make
+mount fork, so that the filesystems are mounted simultaneously.
+
+(ii)  When  mounting  a  file  system  mentioned  in fstab, it suffices to
+give only the device, or only the mount point.
+
+(iii) Normally, only the superuser can mount file systems.  However, when fstab
+contains the user option on a line, anybody can mount the corresponding system.
+
+Some network/unix commands:
+---------------------
+ps -x | grep program - to see how a program was run
+rt shutdown -r - to shutdown and reboot
+log - to see recent commands logged
+
+ln -s ln [OPTION]... TARGET... DIRECTORY
+ln -s ver_num_4_0_21_3_3_1/ jungo
+
+dns server configuration - /etc/resolv.conf
+-------------------------------------------
+home home.jungo.com
+192.168.65.1 
+
+search home.jungo.com
+nameserver 192.168.71.1
+
+install things on linux:
+------------------------
+apt-cache search srec
+apt-get install srecord
+
+run a command
+-------------
+. .bashrc
+
+network:
+-------
+brctrl
+
+snull, napim linux
+------------------
+sn0 192.168.2.1 - local 0
+    192.168.2.2 - remote 0
+
+sn1 192.168.3.2 - local 1
+    192.168.3.1 - remote 1
+
+    ping -c remote 0
+            remote 1
+
+the src of the kernel installed on the comp:
+/usr/src/..
+
+
+Making a patch:
+--------------
+cvs diff -NC3 * > B21603.patch
+cvs diff -NC3 `cat files_list.txt` > toR23923.patch
+
+export DIFFPROG="xxdiff -D"
+cat z_commit | xargs -n1 cvsdiff ...
+
+1. to create a .diff file of two directories for use with patch:
+   $ diff -rNC3 original_dir changed_dir > diff_file_name.diff
+     
+Apply a patch:
+-------------
+patch -p0 < hotfix.B22700 --dry-run # try only without making the changes
+				    #-p number-of-strip=how many ///
+
+Knoppix:
+-------
+sudo - for superuser
+var/log/syslog - for the loggin
+
+Compilation problems && CVS:
+----------------------------
+1. cvs -q up -Pd
+2. export CPPFLAGS=-I/usr/kerberos/include  (your directory)
+L_OBJS - will be link with, but not compiled if needed.
+O_OBJS - will be linked and compiled with.
+3. cvs co -r rt2561-1_0_8_0 -d 1_0_8_0 rg/vendor/ralink
+Check out just a certain directory
+
+
+Make someone a router
+---------------------
+cat /proc/sys/net/ipv4/ip_forward = 1
+to change it use /etc/network, look for this value and set it to yes 
+
+cat /etc/resolv.conf - dns configuration
+
+routing
+-------
+rt ip route add 192.168.1.0/24 dev eth0
+rt ip route add 10.91.1.1 via 192.168.1.1
+rt ip route add default via 192.168.20.1
+rt ip route add/del/change/replace/monitor/append
+rt route del default
+ip route del default via 192.168.20.1
+route add default gw 10.91.1.1
+ip link show eth0
+
+
+wget ip 
+
+Signals:
+-------
+int kill(pid_t pid, int sig)
+or kill -signal pid
+
+Jacs
+----
+#jacs:
+listen 8888
+
+#openrg:
+rg_conf_set cwmp/acs_url http://192.168.1.10:8888/acs
+rg_conf_set cwmp/enabled 1
+reconf 1
+
+#jacs - see inform
+
+#openrg:
+cwmp_session_start
+
+#jacs:
+rpc InformResponse
+rpc GetRPCMethods
+
+review find
+-----------
+find number of one of the files: 
+cvs log pkg/firewall/config/services.c | g -
+
+in /home/lena/project/review
+jcvs grep 1.98.2.3.8.1 | grep services.c
+
+review merge
+------------
+Merge review by review:
+-----------------------
+  review diff  R23064 #show differences
+  review diff -x R23064 #execute - create patch
+  review diff  -j R23064 #jdiff -j
+  review diff  -x -j R23064 #execute jdiff - updates tree
+  review diff  -b #filter specific branch
+
+Example:
+review diff -b branch-4_x -x -j Rxxx
+
+Validate merge:
+review diff R35503 -x > R35503.patch
+review diff -b branch-4_x -x -u Rxxx > diff.from_review  # diff from review
+cvs diff -c `cat z_commit` > x ===> diff from tree
+Other options for cvs diff -NC3, -u 
+
+#cut -c3- z_merge | xargs -l cvs diff -Nu > diff.out #diff from tree
+
+review diff -b 1 R37326 | grep -v ^#
+review diff -b 1 -j R37326 | grep -v ^# -x ---> execute
+
+review diff -b 1 R35875 | grep -v ^#
+review diff -b 1 -j R35875 | grep -v ^#
+
+xxdiff diff.from_review diff.out
+
+all the reviews I need to take: 
+for i in `cat review_sorted.txt` ;do review diff $i >> all_reviews_to_insert;done
+
+for i in `cat z_autotest`; do review diff -b 1 ${i} | grep -v ^# | cut -f 7 -d " " -s| sort| uniq > z_changed_files; done
+
+firewall
+--------
+firewall dump -pr -pd
+     -pc
+     -c c_name
+
+firewall trace v - will trace packets     
+
+Vlans configuration (not sure how to use)
+-----------------------------------------
+rt vconfig add lanbr 6
+rt ifconfig lanbr 6 10.10.10.2
+rt ifconfig lanbr.6 up 
+
+rt vconfig add eth1 #vid#
+#look which if is added#
+rt ifconfig eth1.1 192.168.11.10
+
+alias
+-----
+ifconfig eth2:1 192.168.20.1 --> alias
+jnetwork start --add eth1:lanbr,eth3:wanbr
+
+Download and install SER. On Debian this can be done by:
+-------------------------
+# wget ftp://ftp.berlios.de/pub/ser/0.8.14/packages/debian/stable/ser_0.8.14_i386.deb
+# rt dpkg -i ser_0.8.14_i386.deb
+# wget ftp://ftp.berlios.de/pub/ser/0.8.14/packages/debian/stable/ser-mysql-module_0.8.14_i386.deb
+# rt dpkg -i ser-mysql-module_0.8.14_i386.deb
+
+remote jboards and uml and autotest:
+-----------------------------------
+Minicom:
+--------
+When the minicom doesn't want to run:
+rt minicom -s /dev/ttyS0 #resemble for!
+save the configuration as dfl
+115200 (?)
+no
+no
+
+9600 at livebox login as root 1234
+
+/dev/ttyaa for uml
+
+cd /home/bat/bat/winetworks_win1000_4_2_2_2
+
+tail -f serial  (serial data)
+
+jboard -t  ( board info)
+
+jboard --register-local - to change the eth1, eth3 settings for jnetwork
+
+rt minicom -o -p /dev/.......
+
+rt '/home/bat/bat/winetworks_win1000_4_2_2_2/dist/build.WINETWORKS_WIN1000/pkg/autotest/sync_autotest' --html -e ../env/env.conf.bat_sync_basic,../env/env.conf.grant,../env/env.conf.adm5120 -t rmt1017 -S /home/bat/bat/winetworks_win1000_4_2_2_2/dist/build.WINETWORKS_WIN1000/pkg/autotest/util/sync_serial_agent
+
+local run:
+rt 'build.WINETWORKS_WIN1000/pkg/autotest/sync_autotest' --html -e env.conf.bat_sync_basic  -e env.conf.adm5120 -t sync_fw79_80 -S build.WINETWORKS_WIN1000/pkg/autotest/util/sync_serial_agent
+
+rt 'build.WINETWORKS_WIN1000/pkg/autotest/sync_autotest' --html -t sync_fw79_80 -S build.WINETWORKS_WIN1000/pkg/autotest/util/sync_serial_agent
+
+at_run -d ./ `cat tests_to_run` -a "--html -e ../../env.conf.bat_sync_basic, ../../env.conf.grant,../../env.conf.adm5120"
+
+Run locally:
+-----------
+1. compile autotest pkg/autotest
+ 1. jumls start
+ 2. jboard connect (if you use a local board run
+    jboard --register-local beforehand)
+ 3. jnetwork restart
+
+2. from there:
+Using at_run:
+(root_directory)
+RG_ROOT=/home/lena/dev/westell/qos_4_3_6_2/ at_run -d ../../ -t sync_rmt1016
+
+Using sync_autotest:
+(what bat is using)
+RG_ROOT=/home/lena/dev/westell/qos_4_3_6_2/ rt '/home/lena/dev/westell/qos_4_3_6_2/build.ULTRALINE3_TWINPASS/pkg/autotest/sync_autotest' --html -e /home/lena/project/tools/qa/bat/env/env.conf.bat_sync_basic,/home/lena/project/tools/qa/bat/env/env.conf.ford,/home/lena/project/tools/qa/bat/env/env.conf.twinpass -t ddns3301 -S /home/lena/dev/westell/qos_4_3_6_2/build.ULTRALINE3_TWINPASS/pkg/autotest/util/sync_serial_agent
+
+jboard -p - restart the board 
+
+connect to board:
+bat@grant winetworks_win1000_4_2_2_2 $ jboard -t
+bat@grant winetworks_win1000_4_2_2_2 $ jboard -b HW7171 -c
+
+Run autotest locally:
+jboard --register-local
+749  jboard -t
+750  jboard -c
+
+/home/bat/bat/ultraline3_twinpass_4_3_6_2/20070122_0357/log
+
+jboard --conn-vlan -c -b HW7865
+
+
+Quick Compilation:
+------------------
+HOST
+====
+cdr && cd pkg/web_mng && make && cd ../mgt && make && cd ../main/ && make && f && \cp -f openrg /tftpboot && jstrip /tftpboot/openrg && f && cdr && cd pkg/web_mng/cgi
+
+
+TARGET (4.0)
+============
+openrg_exit_and_shell
+rm /bin/openrg
+tftp get 192.168.1.10:openrg /bin/openrg
+chmod +x /bin/openrg
+/bin/openrg
+
+TARGET (4.1)
+============
+openrg_exit_and_shell
+rm /bin/openrg
+ifconfig eth1 192.168.1.1 up
+tftp -g 192.168.1.10 -r openrg -l /bin/openrg
+chmod +x /bin/openrg
+/bin/openrg
+
+Make hex--> bin
+---------------
+srec_cat cap_file -Needham_Hexadecimal -o bin_file -Binary
+
+Testing something has connection to the outer world:(through dsl)
+-----------------------------------------------------------------
+ping dolly. 
+this is a server that has the connection to the outer world, or something like
+that. on it we can tcpdump to see whether it recieves packets.  
+
+Mans:
+-----
+shift-K apropos ; sleep (or mak -k) man 2 ; sleep
+
+Boot:
+-----
+boot [-g] [-s section | -r address | -u url]
+Options:
+-g - boot with kgdb
+section - flash section to boot from
+address - flash address to boot from
+url - location of remote image when using network boot
+
+network boot
+------------
+rg_conf_print /bootloader
+(bootloader
+  (network_boot(1))
+  (autoboot(1))
+  (timeout(3))
+  (url(tftp://192.168.1.10/openrg.img))
+
+factory 
+-------
+conf factory
+open
+print /
+close
+
+arp
+-----
+cat /proc/net/arp
+
+enable shell in rgloader
+------------------------
+erase no_busybox in config 
+pkg/build/config_target_os 
+pkg/build/feature_config.c
+pkg/main - to enable shell command
+pkg/busybox/include - saved file - make clean config all
+make RG_tree
+
+
+SDK package
+-----------
+tar -zxvf /net/fs/arch/rg/release/vendor/sagem/fast3202-4_0_21_3_3_1_24/sdk_cd_dir.4.0.21.3.3.1.24.tgz
+cd sdk_cd_dir/
+./install.sh fast3202
+
+To build the openrg.img run:
+$ cd /home/lena/rg-4.0.21.3.3.1.24-sagem2/rg
+$ make config DIST=[FAST3202 | FAST3202_MRA] LIC=/home/lena/rg-4.0.21.3.3.1.24-sagem2/jpkg_fast3202.lic && make
+
+Open jpkg:
+----------
+tar zxvf /net/fs/arch/rg/release/vendor/sagem/fast3202-4_0_21_3_3_1_25/sdk_cd_dir.4.0.21.3.3.1.25.tgz
+cd sdk_cd_dir/
+/install.sh fast3202
+cd /tmp/rg-4.0.21.3.3.1.25/rg
+
+esafe:
+------
+Find an external IP
+pp/howto/esafe_setup.txt
+
+enter ssh root@194.90.113.119
+jungo543 is the password.
+fs/external_ip_howtow
+
+./../../../build/pkg/build/rg_gcc
+
+
+headers - is this true? 
+-------
+
+INTERNAL_HEADERS - headers i want to compile, and are included in the src I
+give. 
+EXPORTED_HEADERS - they are copied to the include directory and also go to the
+src.
+CD_EXPORTED_FILES - all sorts of file that will be exported as src. 
+
+jcvs up
+
+
+ipsec
+-----
+tunnel for instance:
+
+Testing setup as following:
+--------------------------
+Two (real) computers connected through IPSEC tunnel on LAN. 
+
+         192.168.1.1                  192.168.20.1
+     OpenRG (westell) -------------- OpenRG (coyote)
+          |                             |
+         comp1                         comp2
+       192.168.1.10                   192.168.20.11
+
+comp1:(westell)
+---------------
+ipsec connection to 10.91.85.3
+when default route is 10.91.85.3 as well
+local subnet:          192.168.1.0/24
+remote subnet:         192.168.20.0/24
+
+comp2: (coyote)
+---------------
+ipsec with 10.91.85.2
+local subnet:           192.168.20.0/24        
+remote subnet:          192.168.1.0/24
+
+Testing:
+--------
+1. allow ping in remote access(!)
+2. ping from 192.168.1.10 --> 192.168.20.11
+3. vice versa.
+
+Testing:
+--------
+allow ping in remote access(!)
+ping from 192.168.1.10 --> 192.168.20.11
+vice versa.
+
+Ipsec Debugging:
+---------------
+(shell)
+klibsdebug --all - shows all the packets.
+spi --help - shows spis and sa
+    --debug
+
+For each connection there is an SA - with SI - esp and tunnel
+
+iperf
+-----
+(ip addresses and all the other details same as the previous setups)
+
+client side:
+rt nice -n -15 iperf -i 1 -u -c 192.168.1.10 -t 20 -l 1200 -b <bandwidth>
+
+server side:
+rt nice -n -15 iperf -i 1 -s -U -u -B 192.168.1.10
+
+
+
+define debugging:
+-----------------
+#ifdef LENA
+#else
+#error LENA ---> will shout at yout at compilation
+#endif
+
+#ifdef TWINPASS_CRYPTO_DEBUG
+#define DEBUG_PRINT(fmt, p...) \
+    printk("Infineon crypto debug: %s: " fmt, __FUNCTION__, ##p)
+    extern void hexdump(unsigned char *buf, unsigned int len);
+#else
+#define DEBUG_PRINT(fmt, p...)
+#endif
+
+gvim
+----
+set tabstop=4
+sh-j
+g-sh*
+set diffopt^=white
+
+gdb
+
+gdb on autotest:
+---------------
+rt gdb sync_autotest
+r --html -e /home/lena/project/tools/qa/bat/env/env.conf.bat_sync_basic,/home/lena/project/tools/qa/bat/env/env.conf.ford,/home/lena/project/tools/qa/bat/env/env.conf.twinpass -t sync_data_pass3082 -S /home/lena/dev/westell/top.branch.4_3_6_3/build.ULTRALINE3_TWINPASS/pkg/autotest/util/sync_serial_agent
+
+GDB DEBUG:
+----------
+tftp -g -l gdbserver -r gdbs.uml 192.168.1.10
+chmod 777 gdbserver
+./gdbserver 192.168.1.10:2345 --attach 39
+
+in build/pkg/main
+trn - for remote debugging.
+call function - to call some functions while debugging
+p function 
+
+backtrace - all the functions in the stack
+up - go up in the stack
+p - print
+i b - info breakpoint
+
+jgdb openrg
+target remote 192.168.1.1:2345
+
+call expr
+
+This GDB was configured as "i486-linux-gnu".
+(gdb) p 512 >> 3
+$1 = 64
+(gdb) p 8 * 64
+$2 = 512
+(gdb) p (512 >> 3) & 0x3f
+$3 = 0
+(gdb) p 0x3f
+$4 = 63
+(gdb)
+$5 = 63
+(gdb) quit
+
+gdb on UML
+----------
+GDB
+---
+cd pkg/main
+rt jgdb openrg
+serial
+b xxx
+c
+
+NOTE: to see what is sent over the serial connection do:
+(gdb) set debug remote 1
+
+kernel mode GDB on UML
+----------------------
+- run UML
+- from tree root
+  $ rt gdb # NOTE: not jgdb!!!
+  (gdb) uml (script from ~/.jgdbinit)
+  (gdb) b ...
+  (gdb) c
+
+KGDB - kernel mode GDB on board
+-------------------------------
+# useful (but not required) configs:
+# - CONFIG_RG_KCALL (enables calling kernel routines)
+# - CONFIG_DEBUG_USER=y (see: os/linux-2.x/Documentation/Configure.help)
+# - CONFIG_KALLSYMS
+# make sure your dist is compiled with CONFIG_RG_KGDB
+# compile the code you want to debug with -g for debugging symbols
+# once up and running you must break into KGDB:
+OpenRG> # AF is break, non defined bread such as Q (CTRL-AFQ) produces help
+OpenRG> # code for handling breaks is in: os/linux-2.x/drivres/char/sysrq.c
+OpenRG> ctrl-afd 
+OpenRG> SysRq : Breaking into KGDB
+# connect to KGDB from serial:
+rt jgdb build/os/linux/vmlinux
+# you must know in which modlue the crash occurs (use cat /proc/ksyms).
+# ??? change the path that appears in the boot, example:
+# add-symbol-file PATH/wl.o
+# to the real path:
+add-symbol-file build/debug/wl.o 0xc010f060 -s .data 0xc01ad490 -s .bss 0xc01b0fe0
+# connect to KGDB
+(gdb) tar rem /dev/ttyS0 # or /dev/ttyS1
+Remote debugging using /dev/ttyS0
+0xffffffff8001bf84 in breakinst () at gdb-stub.c:929
+929             __asm__ __volatile__(
+# set breakpoints and continue
+
+Intresting sites
+----------------
+http://www.linux-mips.org/wiki/KGDB
+
+Kernel debugging on MIPS (map of address on stack to registers):
+------------------------
+http://www.cs.uic.edu/~i366/notes/MIPS%20Quick%20Tutorial.htm
+
+More info:
+----------
+http://en.wikipedia.org/wiki/MIPS_architecture
+
+
+address that starts with 8 is in the kernel.
+nas is the wireless process.
+
+Related Bugs
+------------
+B32898 Enable KGDB on conexant Solos
+R28133 shows how it was done for mips.
+
+Problem and Solutions
+---------------------
+Sometimes if you break on a function, you cannot see the correct value in
+variables and cannot do back-tracing. This is probably because certain registers
+are still not initialized [HELP: because kernel is compiled with -O2 flag?].
+Step into the function a couple of lines, and you should see the variable and
+back-tracing fine.
+
+nice to know for broadcom:
+---------------------------
+CONFIG_KALLSYMS=y CONFIG_DEBUG_USER=y
+These configs help in stack dumps
+
+Usermode GDB on UML
+-------------------
+On OpenRG:
+OpenRG> shell
+# ps
+get the process number /bin/openrg (usually 7)
+# gdbserver /dev/ttyS1 --attach 7
+or alternitively:
+tftp -r -g gdbserver 192.168.1.10
+chmod a+rx ./ugdbs 
+./ugdbs  /dev/ttyS1 --attach 7
+  # 7 means pid of process /bin/openrg
+In Tree:
+$ cd pkg/main (object directory)
+$ rt gdb openrg
+(gdb) dynlib_auto
+(gdb) target remote /dev/ttyab
+(gdb) # optional brakepoints
+(gdb) c
+
+
+bashdb - debugger for shell
+readlinkg build - what am i building now, to what dir am i linked? 
+
+linux:
+------
+cp wbm_main.c{,.tmp} - copy file
+sh-insert - insert something
+alt-ctrl - klipboard choose
+strace - traces all the syscalls -
+it's possible to trace only those that do something to the network..etc..
+ptrace
+
+chown - chown owner file 
+
+lspci
+meld - diff tool
+
+You can grep for EXPORT_SYMBOL in the kernel sources and find the entry points
+offered by different drivers. Most registration functions are prefixed with
+register_, so another possible way to find them is to grep for register_ in
+/proc/ksyms.
+
+/proc/modules - see modules that are loaded. (lsmod)
+
+/proc/ioports
+A typical /proc/ioports file on a recent PC that is running version 2.4 of the kernel will look like the following
+Each entry in the file specifies (in hexadecimal) a range of ports locked by a driver or owned by a hardware device. In earlier versions of the kernel the file had the same format, but without the "layered" structure that is shown through indentation.
+
+ /proc/iomem 
+
+ Once again, the values shown are hexadecimal ranges, and the string after the colon is the name of the "owner" of the I/O region.
+
+As far as driver writing is concerned, the registry for I/O memory is accessed in the same way as for I/O ports, since they are actually based on the same internal mechanism.
+
+To obtain and relinquish access to a certain I/O memory region, the driver should use the following calls:
+
+     int check_mem_region(unsigned long start, unsigned long len);
+     int request_mem_region(unsigned long start, unsigned long len,
+        char *name);
+     int release_mem_region(unsigned long start, unsigned long len);
+
+     if (check_mem_region(mem_addr, mem_size)) { printk("drivername:
+      memory already in use\n"); return -EBUSY; }
+      request_mem_region(mem_addr, mem_size, "drivername");
+
+convert and copy a file
+-----------------------
+$ dd
+
+- creating a zero file
+$ dd if=/dev/zero of=tmp_file count=100000 bs=1000
+
+ftp
+---
+hash
+
+Date:
+-----
+date +%k_%M
+
+date +%j
+# Echoes day of the year (days elapsed since January 1).
+
+date +%k%M
+# Echoes hour and minute in 24-hour format, as a single digit string.
+
+# The 'TZ' parameter permits overriding the default time zone.
+date                 # Mon Mar 28 21:42:16 MST 2005
+TZ=EST date          # Mon Mar 28 23:42:16 EST 2005
+# Thanks, Frank Kannemann and Pete Sjoberg, for the tip.
+
+SixDaysAgo=$(date --date='6 days ago')
+OneMonthAgo=$(date --date='1 month ago')  # Four weeks back (not a month).
+OneYearAgo=$(date --date='1 year ago')
+
+Time:
+-----
+at 2:30 am Friday < at-jobs.list
+
+
+Makefile
+--------
+program: program.o
+	gcc -o $@(program) $^(program.o) 
+
+and he will look for program.c to get program.o
+
+%.o:%.c
+	gcc -c -DDEBUG -o $@ $< (take only the first dependecy)
+
+fastpath - westell sagem
+------------------------
+conf set /fastpath/path/0/src_if eth1
+conf set /fastpath/path/0/dst_if eth0
+conf reconf 1
+
+
+hexdump
+-------
+void
+hexdump(unsigned char *buf, unsigned int len)
+{
+	while (len--)
+		printk("%02x", *buf++);
+
+	printk("\n");
+}
+
+A better performing hexdump:
+
+static void
+hexdump(unsigned char *buf, unsigned int len)
+{
+    static char str[3000];
+    char *s = str;
+    int i;
+
+    s += sprintf(s, "Printing Wrong packet:\n");
+
+    for (i = 0; i < len; i++)
+    {
+	s += sprintf(s, "%02x ", *buf++);
+	if (i % 16 == 15)
+	    s += sprintf(s, "\n");
+    }
+    s += sprintf(s, "\n");
+    printk(str);
+}
+
+
+static char *knet_mactoa(knet_ether_addr_t *mac)
+{
+    static char mac_str[18];
+
+    sprintf(mac_str, "%02x:%02x:%02x:%02x:%02x:%02x", mac->ether_addr_octet[0],
+	mac->ether_addr_octet[1], mac->ether_addr_octet[2],
+	mac->ether_addr_octet[3], mac->ether_addr_octet[4],
+	mac->ether_addr_octet[5]);
+    return mac_str;
+}
+
+find something in all the csv files:
+------------------------------------
+fnd "*csv" > z_csv_files
+grep -i accel `cat z_csv_files`
+
+Lost Review
+-----------
+review -f ci new
+And write everything that was written in the log during the commit. 
+
+dolly user: maint
+
+DHCP:
+-----
+add to /etc/dhcp3/dhclient.conf:
+send vendor-class-identifier "some_option_60_string";
+
+perform:
+dhclient3 ethX
+
+x:
+--
+export DISPLAY=10.71.2.87:0.0
+
+make license:
+-------------
+1. make pkg/license
+2. go to pkg/jpkg/install
+   
+   Look at the right key that is written in the current license. that will give
+   you the correct key to all the packages you want to compile. 
+
+2. ../../../build/pkg/license/makelic_rg
+3. g jpkg_fast3202.lic - take the key
+4. ../../../build/pkg/license/makelic_rg info 3247b5b2315fbbf73ddafc1adb8c4990958f26af5cc38b7599721d42abb8a81983990f483dbfb365d563ca1c4b681fae178bae874ca3cb166530d97104403e9be586218b2e06264275a5
+5. Run whatever it tells you to run: 
+
+  ../../../build/pkg/license/makelic_rg create -type '5' -ver '4.0.21' -features 'toolchain rg_foundation usb_rndis 80211 adv_management snmp dsl ppp vlan zero_config adv_routing security vpn_l2tp vpn_pptp wlan wlan_adv_security qos dslhome' -jpkg_src 'base atm atm-rg bridge build busybox cli ddns dhcp dns doc expat firewall gdb genromfs hotplug httpd igmp image include iproute2 kernel-atm kernel-usb kernel-rg kos l2tp language lzma mail-client main mgt mss openssl perm-storage ppp qos rgloader rip rmt-mng samples syslog syslog-glibc telnet test-tools tod tz ucd-snmp upnp usb-slave util util-linux vlan web-mng wget x509 xml zlib vendor tools vendor-lexra vendor-sagem bluetooth bluetooth-ctp linux-2.6-i386 linux-2.6-mips linux-2.6 obex bluetooth-rg cramfs vendor-adi-26 util-gpl include-gpl kernel fastpath ppp-gpl vendor-adi-26-gpl obex-rg' -jpkg_bin 'license' -target_arch 'mips_eb' -target_os 'linux' -jpkg_arch 'lx4189'
+
+6. makelic_rg createfile jpkg_fast3202.lic.new 'license' 'version number'
+   564  ../../../build/pkg/license/makelic_rg createfile
+   565  ../../../build/pkg/license/makelic_rg createfile jpkg_fast3202.lic.new 3247b5b2315fbbf73ddafc1adb8c4990958f26af5cc38b7599721d42abb8a81983990f483dbfb365d563ca1c4b681fae178bae874ca3cb166530d97104403e9be586218b2e06264275a5
+  566  ../../../build/pkg/license/makelic_rg createfile jpkg_fast3202.lic.new 4.0.21.3.3.1.27 3247b5b2315fbbf73ddafc1adb8c4990958f26af5cc38b7599721d42abb8a81983990f483dbfb365d563ca1c4b681fae178bae874ca3cb166530d97104403e9be586218b2e06264275a5
+
+
+make and test jpkgs:
+--------------------
+1. Test normal jpkg:
+make test_jpkg DIST=FAST3202 LIC=pkg/jpkg/install/jpkg_fast3202.lic
+JPKG_DIST=JPKG_LX4189
+2. test GPL jpg:
+make test_jpkg CONFIG_RG_GPL=y LIC=build.FAST3202_/pkg/jpkg/install/jpkg_fast3202_gpl.lic
+
+
+hping
+-----
+rt hping3 --udp -c 1 192.168.61.1 --destport 1024 --baseport 1030
+
+language csv
+------------
+make merge_to_csv - will make a langauge file that includes all the Ts
+
+h323
+----
+gatekeeper - 192.168.65.25 on saar's computer, in QA network
+in port forwarding: destination port - 1720
+
+/net/fs/arch/linux/openrg/tools --> gdb servers
+/net/fs/arch/linux/openrg/usr/local/openrg --> toolchains
+
+ pkg/tools/crash_analyze.pl < /tmp/e.txt
+
+
+
+
+# GIT
+Local commit (REBYPASS - in order to know not to forget)
+  git add package/openssl/Makefile 
+  git commit 
+ 
+Check 
+   git show
+ 
+ Create a review
+ rbt post 0a9ac089395baa0354337e04b06bf0c8b6cfd2a1
+ 
+ 
+Make sure tree is clean
+ git pull --rebase
+
+ NOW isert te stupid review id into the commit message
+  git commit --amend
+
+
+Once you get "ship it" message you can push
+  git pull --rebase
+ # The following pushes the entire tree! be careful
+  git push
+
+Load fs to /tmp
+  sudo mount -t ext4 -o loop openwrt-uml-GANTN-ext4.img /tmp/fs/ 
+  sudo umount /tmp/fs
+
+
+mount --bind 
+or on /etc/fstab:
+/mnt/sdb1/git/gant-n_uml /home/birgere/git/gant-n_uml none defaults,bind 0 0
+
+
+git log
+git reset --hard <last commit>
+git log - should not show your commit
+git pull --rebase
+patch -p1 < /tmp/ripdrv.patch
+git status
+git commit -a -m "kuku"
+
+
+git stash
+git tag bad 058f8e8299ac4a0ec8e71b225b82b5d86c193898
+git checkout bad
+git stash pop
+git difftool
+git add -p
+git commit --amend
+git rebase --onto=HEAD bad master
+git tag -d bad
+git log
+
+
+# update the commit msgs
+git rebase -i <commit msg to start from>
+
+
+git tag good <commit>
+
+git checkout
+
+
+
+# upgrader for bcm
+sudo /etc/init.d/xinetd stop
+sudo java -jar ~/bin/BliUpgraderFull.jar openwrt-brcm63xx-tch-VANTF-Generic-open-VANT-D.bli -i 192.168.1.10
+sudo /etc/init.d/xinetd start
+
+
+
+https://confluence.technicolor.com/display/Linux/RepoWRT
+
+repowrt upload $PACKAGE
+
+cd feeds/technicolor
+repowrt feeds changes
+
+repowrt feeds upload
+
+
+QUILT
+======
+
+make package/alljoyn-lighting/{clean,prepare} V=s QUILT=1
+cd build_dir/target-*/alljoyn-15.04/
+
+
+
+quilt push -a
+- or -
+quilt push 010-main_code_fix.patch
+
+
+quilt new 001-service-framework-compilation.patch
+
+quilt add <files>
+- or -
+quilt edit core/service_framework/SConscript 
+
+quilt diff
+quilt refresh
+cd ../../../
+make package/alljoyn-lighting/update V=s
+time make package/alljoyn-lighting/{clean,compile} package/index V=s 
+
+
+
+make package/alljoyn-lighting/{clean,prepare} V=s QUILT=1
+cd -
+quilt push -a
+cd -
+
+
+g core/service_framework/standard_core_library/lighting_controller_client/samples/LightingControllerClientSample.cc
+
+
+# quilt diff
+quilt refresh
+cd -
+
+
+make package/alljoyn-lighting/update V=s && time make package/alljoyn-lighting/compile package/index V=s 
+
+time make package/alljoyn-lighting/{clean,compile} package/index V=s 
+
+time make package/alljoyn-lighting/compile package/index V=s 
+
+callme
+
+
+
+
+make package/alljoyn-lighting/{clean,prepare} V=s QUILT=1; cd build_dir/target-*/alljoyn-*/; quilt push -a; cd -
+
+
+ubus call alljoyn_lighting get_ids 
+ubus call alljoyn_lighting get_name '{ "id": "10c423c3756b8b5063abc17b6a7d0214", }'; 
+ubus call alljoyn_lighting get_on_off '{ "id": "10c423c3756b8b5063abc17b6a7d0214", }'; 
+ubus call alljoyn_lighting get_saturation '{ "id": "10c423c3756b8b5063abc17b6a7d0214", }'; 
+ubus call alljoyn_lighting get_brightness '{ "id": "10c423c3756b8b5063abc17b6a7d0214", }'; 
+ubus call alljoyn_lighting get_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  }'; 
+ubus call alljoyn_lighting set_on_off '{ "id" : "10c423c3756b8b5063abc17b6a7d0214",  "value" : 0, }'; sleep 1;
+ubus call alljoyn_lighting set_on_off '{ "id" : "10c423c3756b8b5063abc17b6a7d0214",  "value" : 1, }'; sleep 1;
+
+ubus call alljoyn_lighting set_saturation '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 0, }'; sleep 1;
+ubus call alljoyn_lighting set_saturation '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 50, }'; sleep 1;
+ubus call alljoyn_lighting set_saturation '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 65000, }'; sleep 1; 
+
+ubus call alljoyn_lighting set_brightness '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 0, }'; sleep 1 
+ubus call alljoyn_lighting set_brightness '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 1000, }'; sleep 1 
+ubus call alljoyn_lighting set_brightness '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 10000, }'; sleep 1 
+ubus call alljoyn_lighting set_brightness '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 30000, }'; sleep 1 
+ubus call alljoyn_lighting set_brightness '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 65000, }'; sleep 1;
+ubus call alljoyn_lighting set_brightness '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 10000, }';
+
+ubus call alljoyn_lighting set_hue '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 0, }'; sleep 1 
+ubus call alljoyn_lighting set_hue '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 10000, }'; sleep 1 
+ubus call alljoyn_lighting set_hue '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 20000, }'; sleep 1 
+ubus call alljoyn_lighting set_hue '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 30000, }'; sleep 1 
+ubus call alljoyn_lighting set_hue '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 40000, }'; sleep 1 
+ubus call alljoyn_lighting set_hue '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 50000, }'; sleep 1 
+ubus call alljoyn_lighting set_hue '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 60000, }'; sleep 1 
+ubus call alljoyn_lighting set_hue '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 65000, }';
+ubus call alljoyn_lighting set_hue '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 10000, }';
+
+ubus call alljoyn_lighting set_saturation '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 0, }'; 
+ubus call alljoyn_lighting set_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 0, }'; sleep 1 
+ubus call alljoyn_lighting set_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 10000, }'; sleep 1 
+ubus call alljoyn_lighting set_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 20000, }'; sleep 1 
+ubus call alljoyn_lighting set_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 30000, }'; sleep 1 
+ubus call alljoyn_lighting set_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 40000, }'; sleep 1 
+ubus call alljoyn_lighting set_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 50000, }'; sleep 1 
+ubus call alljoyn_lighting set_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 60000, }'; sleep 1 
+ubus call alljoyn_lighting set_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  "value" : 65000, }'; 
+
+ubus call alljoyn_lighting get_ids 
+ubus call alljoyn_lighting get_name '{ "id": "10c423c3756b8b5063abc17b6a7d0214", }'; 
+ubus call alljoyn_lighting get_on_off '{ "id": "10c423c3756b8b5063abc17b6a7d0214", }'; 
+ubus call alljoyn_lighting get_saturation '{ "id": "10c423c3756b8b5063abc17b6a7d0214", }'; 
+ubus call alljoyn_lighting get_brightness '{ "id": "10c423c3756b8b5063abc17b6a7d0214", }'; 
+ubus call alljoyn_lighting get_color_temp '{ "id": "10c423c3756b8b5063abc17b6a7d0214",  }'; 
+
+
+
+
+Transformer mapping file:
+       /net/fs/data/shared/home/menachemio/shared/alljoyn.map
+
+
+cd /usr/share/transformer/mappings/rpc
+
+tftp -g 192.168.1.100 -r smarthome.alljoyn.devices.map
+tftp -g 192.168.1.100 -r smarthome.map
+tftp -g 192.168.1.100 -r smarthome.alljoyn.map
+
+/etc/init.d/transformer restart 
+
+
+Locate on board at:
+       /usr/share/transformer/mappings/rpc
+
+Restart transformer:
+      /etc/init.d/transformer restart
+
+Commands:
+transformer-cli get rpc.smarthome.alljoyn.
+
+transformer-cli set rpc.smarthome.alljoyn.devices.1.onOff false
+transformer-cli set rpc.smarthome.alljoyn.devices.1.onOff true
+
+transformer-cli set rpc.smarthome.alljoyn.devices.1.name "ReadOnly - ShouldFail"
+transformer-cli set rpc.smarthome.alljoyn.devices.1.uuid 1234
+
+transformer-cli set rpc.smarthome.alljoyn.devices.1.brightness 30000 
+transformer-cli set rpc.smarthome.alljoyn.devices.1.saturation 0 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.saturation 1000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.saturation 10000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.saturation 20000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.saturation 30000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.saturation 40000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.saturation 50000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.saturation 65000 ; sleep 1
+
+for i in `seq 0 6`; do let var=$i*10000; transformer-cli set rpc.smarthome.alljoyn.devices.1.brightness $var; sleep 1; done
+transformer-cli set rpc.smarthome.alljoyn.devices.1.brightness 10000
+
+for i in `seq 0 6`; do let var=$i*10000; transformer-cli set rpc.smarthome.alljoyn.devices.1.hue $var; sleep 1; done
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 10000
+
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 0 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 1000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 10000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 20000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 30000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 40000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 50000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 65000 ; sleep 1
+transformer-cli set rpc.smarthome.alljoyn.devices.1.hue 10000
+
+transformer-cli set rpc.smarthome.alljoyn.devices.1.brightness 30000 
+for i in `seq 0 6`; do let var=$i*10000; transformer-cli set rpc.smarthome.alljoyn.devices.1.colorTemp $var; sleep 1; done
+transformer-cli set rpc.smarthome.alljoyn.devices.1.colorTemp 1000
+transformer-cli set rpc.smarthome.alljoyn.devices.1.brightness 10000
+
+transformer-cli get rpc.smarthome.alljoyn.
+
+
+
+
+lighting_controller_service 
+
+
+uci get system.@coredump[0].reboot
+
+uci set system.@coredump[0].reboot=0
+uci commit
+
+uci get system.@coredump[0].reboot
+
+
+
+
+
+
+
+
+uci get wireless.ap0.security_mode
+uci set wireless.ap0.security_mode=wpa2-psk
+uci get wireless.ap0.security_mode
+
+uci get wireless.ap1.security_mode
+uci set wireless.ap1.security_mode=wpa2-psk
+uci get wireless.ap1.security_mode
+
+
+uci get wireless.ap0.wpa_psk_key
+uci set wireless.ap0.wpa_psk_key=12345678
+uci get wireless.ap0.wpa_psk_key
+
+uci get wireless.ap1.wpa_psk_key
+uci set wireless.ap1.wpa_psk_key=12345678
+uci get wireless.ap1.wpa_psk_key
+
+
+
+
+uci commit
+
+
+
+
+
+
+ubus call alljoyn_lighting get_ids 
+
+
+
+
+ubus -v -t 36000 listen "alljoyn_lighting" &
+logread -f | grep lighting_ubus &
+
+
+

@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# this one is most suitable for merge commits
+
+# new difm:
+
+#TAG_BASE=tag-3_14_14_1_5
+#TAG_BRANCH=tag-3_14_14_1_8
+#TAG_DST_BEFORE=branch-3_14_14_2
+TAG_BASE=tag-3_14_39
+TAG_BRANCH=branch-3_14_39_2
+TAG_DST_BEFORE=branch-4_0
+
+
+
+CVS_NAME=`echo $1 | sed -e 's%^rg/%%'`
+FILE_NAME=`basename $CVS_NAME`
+
+TMP_BASE=.tmp.base.$FILE_NAME
+cvs up -p -r $TAG_BASE $CVS_NAME > $TMP_BASE
+
+TMP_BRANCH=.tmp.branch.$FILE_NAME
+cvs up -p -r $TAG_BRANCH $CVS_NAME > $TMP_BRANCH
+
+TMP_DST_BEFORE=.tmp.dst-before.$FILE_NAME
+cvs up -p -r $TAG_DST_BEFORE $CVS_NAME > $TMP_DST_BEFORE
+
+#xxdiff $TMP_BASE $TMP_DST_BEFORE $1 &
+#xxdiff $TMP_BASE $TMP_BRANCH $1
+g -d $TMP_DST_BEFORE $1 &
+g -df $TMP_BASE $TMP_BRANCH
+
+rm -f $TMP_BRANCH $TMP_BASE $TMP_DST_BEFORE
+

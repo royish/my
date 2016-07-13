@@ -1,0 +1,36 @@
+#!/bin/bash
+
+tmp_f=/tmp/jdoc_mail_msg_$RANDOM
+
+cat > $tmp_f
+
+if [[ $1 == "-e" ]]; then
+	reveditmode=1
+fi
+
+rg_branch=`grep -e "^Subject:.*branch-.* rg/" $tmp_f | sed -e "s~\( branch-[^ ]*\) .*~\1~" -e "s~^.* branch-~branch-~"`
+rg_file=`grep -e "^Subject:.* rg/" $tmp_f | sed -e "s~\( rg/[^:]*\):.*~\1~" -e "s~^.* rg/~rg/~"`
+rg_rev=`grep -e "^diff " -e "^<pre>diff " $tmp_f | sed -e "s~^.* -r ~~"`
+
+if [[ -z $rg_file || -z $rg_rev ]]; then
+	exit -1
+fi
+export PATH=$PATH:/home/yoavp/scripts
+
+gvimopts="+:set ft=diff nomodified"
+
+rev_id=`s.get_review_id $rg_file $rg_rev`
+if [[ -z $rev_id ]]; then
+  exit -1
+fi
+
+if [[ -n $reveditmode ]]; then
+	xterm -e review edit $rev_id
+else
+	if [[ -z $rg_branch ]]; then
+		rg_branch=1
+	fi
+	s.rs -b $rg_branch $rev_id | g "$gvimopts" -
+fi
+
+rm $tmp_f

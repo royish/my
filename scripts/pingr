@@ -1,0 +1,6 @@
+#!/bin/sh 
+
+printf "\n"
+sleep 300
+pingr &
+

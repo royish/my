@@ -1,0 +1,75 @@
+Index: phone.c
+===================================================================
+RCS file: /arch/cvs/project/tools/phone.c,v
+retrieving revision 1.45
+diff -r1.45 phone.c
+15a16,17
+> #include "sys.h"
+> #include "file.h"
+20a23,28
+> #define DIR_PICTURES "/net/fs/arch/hr/pictures"
+> #define VIEWER_DISPLAY "/usr/bin/display"
+> 
+> char *image_viewers[] = { VIEWER_DISPLAY, "/usr/bin/kuickshow",
+>     "/usr/bin/kview", "/usr/bin/eog", "/usr/bin/gimp", "/usr/bin/firefox",
+>     "/usr/bin/konqueror", "/usr/bin/mozilla", NULL };
+40a49
+> 	"  -p - Show photo of person\n\n"
+170a180,211
+> static void show_photo(csv_t *users, csv_line_t *line, char *viewer)
+> {
+>     char *login, *user_file = NULL, *params = NULL;
+> 
+>     login = csv_field_get(users, line, "login");
+> 
+>     str_printf(&user_file, "%s/%s.jpeg", DIR_PICTURES, login);
+>     if (!file_exist(user_file))
+> 	goto Exit;
+> 
+>     /* Set image size and title */
+>     if (!strcmp(viewer, VIEWER_DISPLAY))
+>     {
+> 	str_printf(&params, "-quiet -immutable -resize 512x784 -title "
+> 	    "\"%s%s %s (%s)%s%s%s%s\" ",
+> 	    atoi(csv_field_get(users, line, "active")) ? "" : "[INACTIVE] ",
+> 	    csv_field_get(users, line, "first_name"),
+> 	    csv_field_get(users, line, "last_name"),
+> 	    csv_field_get(users, line, "login"),
+> 	    !str_isempty(csv_field_get(users, line, "phone_ext"))? ", " : "",
+> 	    csv_field_get(users, line, "phone_ext"),
+> 	    !str_isempty(csv_field_get(users, line, "company_mobile"))? ", " : "",
+> 	    csv_field_get(users, line, "company_mobile"));
+>     }
+> 
+>     sys_exec("%s %s%s &", viewer, str_nonull(params), user_file);
+> 
+> Exit:
+>     str_free(&user_file);
+>     str_free(&params);
+> }
+> 
+181a223,224
+>     int is_photo = 0;
+>     char **viewer;
+187c230
+< 	int c = getopt(argc, argv, "dcansxu");
+---
+> 	int c = getopt(argc, argv, "dcanspxu");
+220a264,266
+> 	case 'p':
+>             is_photo = file_exist(DIR_PICTURES);
+> 	    break;
+234a281,287
+> 
+>     /* Select image viewer */
+>     for (viewer = image_viewers; *viewer && !file_exist(*viewer); viewer++);
+> 
+>     if (str_isempty(*viewer))
+> 	is_photo = 0;
+> 
+263a317,321
+> 	    
+> 	    /* Print user image */
+> 	    if (is_photo && !is_nds)
+> 		show_photo(users, line, *viewer);
+> 

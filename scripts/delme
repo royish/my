@@ -1,0 +1,6 @@
+echo 1
+x=$PIPESTATUS
+if (($x)); then
+  echo yoffi
+fi
+exit $x

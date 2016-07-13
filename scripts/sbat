@@ -1,0 +1,31 @@
+#!/bin/bash
+
+for host in `cat $HOME/my/scripts/bat_hosts`; do
+    printf "===============   $@ at $host  ====================\n"
+    ssh bat@$host "DISPLAY=:0.0 $@" 
+    x=$PIPESTATUS
+    if (($x)); then
+      printf "!!!!!!!!!!!!!!!!!!!!!  $@ at $host  !!!!!!!!!!!!!!!!!!!!!!!\n"
+      echo "!!!!!!!!!!!!!!!!!!!!!  $@ at $host  !!!!!!!!!!!!!!!!!!!!!!!\n" > /tmp/sbat.log
+    fi
+done;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

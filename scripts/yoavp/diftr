@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ $# != 2 ]; then
+	echo "Usage: diftr <filename> <tree_name>";
+	echo "where tree_name is other tree's name without the leading 'rg.'";
+	exit;
+fi
+
+LOC=`pwd | sed -e "s/.*rg\.[^\/]*//"`
+OTHERFILE=~/rg.$2$LOC/$1
+
+$DIFFPROG $OTHERFILE $1 &
+

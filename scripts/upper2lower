@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# upper2lower - convert all files in a directory from upper
+# to lower case filenames and replace spaces with _
+
+for f in *; do # turn all spaces into underscores
+   mv \"$f\" `echo \"$f\" | tr [:space:]  _`
+done
+
+for g in *; do # make all characters lowercase
+   mv $g `echo $g | tr A-Z a-z`
+done
+
+# EOF

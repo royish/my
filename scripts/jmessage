@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+# $1 = Host
+# $2 = Message
+
+host=$1
+shift 1
+message=$@
+jssh $host "DISPLAY=:0.0 xmessage -center '$USER: $message'; exit" > /dev/null

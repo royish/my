@@ -1,0 +1,21 @@
+#!/bin/bash
+
+V1=$1
+V2=$2
+file=$3
+
+TAG=`cvs stat $file | grep Tag`
+printf "$fils is $TAG target is $file\n"
+printf "Should I Patch? [y/N] "
+read cont
+if [ $cont == "y" ]; then
+  cvs update -kk -j $V1 -j $V2 $file
+  x=$PIPESTATUS
+else
+    printf "not patching...\n"
+fi
+
+if (($x)); then
+  printf "FAILED!!!"
+fi
+exit $x

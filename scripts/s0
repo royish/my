@@ -1,0 +1,10 @@
+#!/bin/bash
+
+write() {
+  echo $@ > /dev/ttyS0;
+  return $PIPESTATUS;
+}
+
+write "admin"
+write "admin"
+write "$@"

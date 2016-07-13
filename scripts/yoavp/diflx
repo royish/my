@@ -1,0 +1,13 @@
+#/bin/sh
+
+if [[ $# != 1 ]]; then
+	echo "Usage: diflx <filename>";
+	exit;
+fi
+
+LOC=`/bin/pwd | \
+  sed -e "s%os/linux-2.4%ZZZ%" -e "s%linux/%os/linux-2.4/%" \
+    -e "s%os/linux-2.6%os/linux-2.4%" -e "s%ZZZ%os/linux-2.6%"`
+OTHERFILE=$LOC/$1
+$DIFFPROG $OTHERFILE $1 &
+

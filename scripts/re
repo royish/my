@@ -1,0 +1,4 @@
+#!/bin/bash
+
+review=`echo $1 | sed -e 's%R\(.*\).*%\1%'`
+review edit R$review

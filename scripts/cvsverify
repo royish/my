@@ -1,0 +1,23 @@
+#!/bin/sh -x
+
+FILTER="^[M|C|A] "
+CVS=$2
+
+usage()
+{
+    echo "Usage: cvsverify <up_file> [up_attr: [M|C|A ]]"
+}
+
+if [ "$#" == "0" ]; then
+    usage
+    exit
+fi
+
+files=`cat $1 | grep "$FILTER" | awk '{print $2}'`
+
+for f in $files; do
+    echo $f
+    [ "$CVS" == "" ] && cvsdiff $f && continue
+    $DIFFPROG $CVS/$f $f
+done
+

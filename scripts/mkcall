@@ -1,0 +1,2 @@
+cat ~/my/scripts/config_list | xargs -l cake_build
+cat ~/my/scripts/config_list | xargs -l ctg

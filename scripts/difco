@@ -1,0 +1,10 @@
+#/bin/sh
+
+if [[ $# != 1 ]]; then
+	echo "Usage: difco <filename>";
+	exit;
+fi
+
+LATEST_REV=`cvs stat $1 | awk '/Repository/ {print $3;}'`
+
+cvsdiff -r $LATEST_REV $1

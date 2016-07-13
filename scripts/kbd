@@ -1,0 +1,35 @@
+xmodmap -e "keycode 111 = BackSpace"	# print screen
+xmodmap -e "keycode 115 = F13"		# left win
+#@@@ xmodmap -e "keycode 116 = Escape"	# right win
+xmodmap -e "keycode 117 = F14"		# menu
+xmodmap -e "keycode 227 = F15"		# sun
+xmodmap -e "keycode 223 = F16"		# moon
+xmodmap -e "keycode 222 = F19"		# power
+
+# allows mapping shift-space in gvim but ruins shift-space in konsole
+#xmodmap -e "keycode 65 = space F19 space space"
+
+# disable tab - seems unnecessary since it doesn't repeat anymore
+# xmodmap -e "keycode 23 = "
+
+xmodmap -e "remove lock = Caps_Lock"
+# 66 = capslock
+xmodmap -e "keycode 66 = Super_L"
+#xmodmap -e "keycode 66 = Tab"
+# 116 = right win
+xmodmap -e "keycode 116 = Super_L"
+xmodmap -e "clear Mod4"
+xmodmap -e "add Mod4 = Super_L"
+
+
+#@@@????
+#@@@xmodmap -e "keycode 49 = underscore asciitilde"
+#@@@xmodmap -e "keycode 20 = minus grave"
+
+
+#-heb
+
+# rate
+xset r rate 224 56
+# no autorepeat for menu key and broken tab
+xset -r 117 -r 23

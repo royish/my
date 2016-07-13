@@ -1,0 +1,1 @@
+rdesktop -f -D -K -T HOME -g workarea -a 16 -u "royi" -r sound:remote royi.homeip.net &

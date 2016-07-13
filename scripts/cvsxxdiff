@@ -1,0 +1,139 @@
+#!/bin/bash
+
+DIFFPROG="xxdiff -D"
+[ -z "$IMG_DIFFPROG" ] && IMG_DIFFPROG="gimp --no-splash"
+
+usage()
+{
+    echo "usage: $0 [<rev1>] [<rev2>] [<rev3>] <filename>"
+    echo
+    echo "options:"
+    echo "  --help"
+    echo "  --root              work directly on root repository from $$CVSROOT"
+    echo "  <rev>               <rev> is one of the following:"
+    echo "    -r <Revision>     <Revision> is revision number, tag or branch" 
+    echo "    -D <Date>         <Date> is the date to compare to"
+    echo
+    echo "  cvsdiff <r1>            compare local file with revision <r1>"
+    echo "  cvsdiff <r1> <r2>       compare 2 revisions r1 and r2"
+    echo "  cvsdiff <r1> <r2> <r3>  compare 3 revisions r1, r2 and r3"
+    echo "  cvsdiff <r1> <r2> -r -  compare 2 revisions r1 and r2 with local file"
+    echo
+    echo "environment:"
+    echo "  DIFFPROG sets the diff application activated"
+    echo "           ->  Cygwin users can add to /etc/profile:"
+    echo "             export DIFFPROG='/cygdrive/c/vim/vim60/gvim -d'"
+    echo "           ->  Linux users can add to /etc/profile:"
+    echo "             export DIFFPROG='gvim -d -f'"
+    exit 1
+}
+
+proj_diff()
+{
+    proj_parse -a 3 -p "$user" < "$1" > "$1.pr_tmp"
+    proj_parse -a 3 -p "$user" < "$2" > "$2.pr_tmp"
+    $DIFFPROG "$1.pr_tmp" "$2.pr_tmp"
+    rm -f "$1.pr_tmp" "$2.pr_tmp"
+}
+
+cmd="$0"
+cvscmd="update"
+while [ ! -z "$*" ]; do 
+    case "$1" in
+        --help)
+            usage
+	    ;;
+	-r|-D)
+	    opt="$1"
+	    shift
+	    if [ -z "$rev1" ]; then
+		opt1="$opt"    
+		rev1="$1"
+	    elif [ -z "$rev2" ]; then
+		opt2="$opt"    
+		rev2="$1"
+	    elif [ -z "$rev3" ]; then
+		opt3="$opt"    
+		rev3="$1"
+	    else
+		echo "only 3 revisions are allowed!"
+		exit 1
+	    fi
+	    ;;
+	--root)
+	    [ -n "$CVSROOT" ] || ( echo "no $$CVSROOT!" ; exit 1 )
+	    cvscmd="-d $CVSROOT co"
+	    ;;
+	-p)
+	    user="$2"
+	    shift
+	    ;;
+	-*)
+	    echo "bad option $1"
+	    exit 1
+	    ;;
+	*)
+	    [ -n "$file" ] && \
+	        ( echo "cannot diff more than one file!!" ; exit 1 )
+	    file="$1"
+	    shift
+	    ;;
+    esac
+    shift
+done
+		
+[ -z "$file" ] && usage
+
+base=`basename "$file"`
+entries=`echo "$file" | sed -e "s%$base$%CVS//Entries%" -e "s%/-[^/]*/%%"`
+
+if [ -z "$rev1" ]; then
+    rev1=`cat "$entries" | grep \/"$base"\/ | \
+    sed -e 's%^/[^/]*/\([^/]*\)/.*%\1%'` 
+    opt1=-r
+fi
+
+case $rev1 in
+    D*) opt1=-;;
+esac
+
+file1=`echo $file.$rev1.tmp | tr -d ' '`
+file2=`echo $file.$rev2.tmp | tr -d ' '`
+file3=`echo $file.$rev3.tmp | tr -d ' '`
+if [ -n "root" ] ; then
+  file1=`basename $file1`
+  file2=`basename $file2`
+  file3=`basename $file3`
+fi
+
+cvs $cvscmd -p "$opt1" "$rev1" "$file" > "$file1"
+if [ -n "`echo $file | grep '\.\(gif\|jpg\)$'`" ] ; then
+    DIFFPROG="$IMG_DIFFPROG"
+fi
+
+prog_diff="$DIFFPROG"
+[ "$user" != "" ] && prog_diff=proj_diff
+
+if [ -z "$rev2" ]; then
+    $prog_diff "$file" "$file1"
+else
+    cvs $cvscmd -p "$opt2" "$rev2" "$file" > "$file2"
+    if [ -z "$rev3" ]; then
+	echo $file1 $file2
+	$prog_diff "$file1" "$file2"
+    else
+	if [ "$rev3" = "-" ]; then
+	    echo $file1 $file2 $file
+	    $prog_diff "$file1" "$file2" "$file"
+	else
+	    cvs $cvscmd -p "$opt3" "$rev3" "$file" > "$file3"
+	    echo $file1 $file2 $file3
+	    $prog_diff "$file1" "$file2" "$file3"
+	fi
+    fi
+fi
+
+rm -f "$file1" "$file2" "$file3"
+
+exit 0
+

@@ -1,0 +1,31 @@
+#!/bin/bash
+. /usr/local/bin/jtools_functions.sh
+
+D=`jpwdroot`
+BUILD=`ls -l $D/build 2> /dev/null | sed -e 's%.*/build\.\([^/]*\).*%\1%'`
+build=$D/build.$BUILD
+tree=`pwd | sed "s/.*\/\(.*\)\.rg.*/\1/"`
+ver=`$build/pkg/build/rg_version_info -c 2> /dev/null`
+if [ -z $ver ] ; then
+    printf "Build \"$BUILD\" in tree \"$tree\" must not be compiled...\n"
+    exit -1
+fi
+if [ -z "$1" ]; then
+    dir=`pwd 2> /dev/null | sed -e 's%.*/\([^/]*\)$%\1%'`
+else
+    dir=$1
+fi
+bin=u-boot.bin
+#ifx=u-boot.ifx
+img=u-boot/$dir/$ver/$bin
+#ifx_link=u-boot.ifx
+
+cd /tftpboot
+mkdir u-boot/$dir  2> /dev/null
+mkdir u-boot/$dir/$ver  2> /dev/null
+cp $build/vendor/infineon/danube//u-boot/$bin /tftpboot/$img
+#rt rm -rf $bin
+ln -sf $img $bin
+#ln -sf $img $ifx_link
+ls --color=auto -la $bin  
+

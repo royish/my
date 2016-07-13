@@ -1,0 +1,14 @@
+#!/bin/sh
+
+. /usr/local/bin/jtools_functions.sh
+
+if [ -z $1 ]; then
+    TDIR="$PWD"
+else
+    TDIR="$@"
+fi
+
+cdr
+ctags -Ra $TDIR
+cd -
+

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Usage:
+#  $1 lic_file
+#  $2 jpkg_src/jpkg_bin/features
+#  $3 jpkg(s)
+
+if [ 0 == $# ]; then
+  echo "usage: $0 <lic-file> <jpkg_src|jpkg_bin|features> <jpkg>"
+  exit
+fi
+
+D=`jpwdroot`
+cd $D
+LIC_FILE=pkg/jpkg/install/$1
+if [ "`ls -l $LIC_FILE 2> /dev/null`" == "" ]; then
+  printf "Error: no such lic\n"
+  exit 1;
+fi
+LIC=`head -4 $LIC_FILE | grep LICSTR | sed -e 's%LICSTR: %%'`
+#printf "LIC=$LIC\n"
+INFO=`build/pkg/license/makelic_rg info "$LIC"`
+#printf "INFO:\n$INFO\n"
+CHECK=`build/pkg/license/makelic_rg info "$LIC" | grep makelic_rg | grep -w $3`
+if [ -z "$CHECK" ]; then
+  printf "wrong arguments\n"
+fi
+COMMAND=`build/pkg/license/makelic_rg info "$LIC" | grep makelic_rg`
+TYPE=$2
+shift 2
+printf "$COMMAND\n\n\n"
+for arg
+do
+  COMMAND=`echo $COMMAND | sed -e "s%-$TYPE '%&$arg %"`
+done
+printf "build/pkg/license/$COMMAND\n"
+NEW_LIC=`bash -c "build/pkg/license/$COMMAND"`
+VER=`cat $LIC_FILE | grep VERSION | sed -e 's%VERSION: %%'`
+KEY=`build/pkg/license/lic_rg prvkey $LIC_FILE`
+#printf "build/pkg/license/makelic_rg createfile $LIC_FILE $VER $NEW_LIC -k \"$KEY\"\n"
+./build/pkg/license/makelic_rg createfile $LIC_FILE $VER $NEW_LIC -k "$KEY"
+cvsdiff $LIC_FILE 
+

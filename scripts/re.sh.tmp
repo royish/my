@@ -1,0 +1,14 @@
+#! /bin/bash
+
+REVIEWID="`echo $1 | sed 's/^R//'`"
+
+tmp=`mysql -h mysql -D jdoc -e \"select \
+  __file from reviews where id=$REVIEWID\" -s | sed 's/review\///'`
+tmp2="`echo $1 | sed 's/^R[0-9]*\([0-9][0-9]\)/\1/'`"
+
+cd $HOME/review
+cvs -q up $tmp2
+
+REVIEW_FILE="$HOME/review/$tmp2/R$REVIEWID";
+
+g $REVIEW_FILE

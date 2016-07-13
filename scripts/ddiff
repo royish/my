@@ -1,0 +1,2 @@
+DIFFPROG=xxdiff cvsdiff $1 & DIFFPROG=xxdiff cvsdiff -r tag-5_2_2 -r tag-5_2_2_1_1 $1
+

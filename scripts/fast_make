@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# perform a fast-make for recompilation of usermode or kernelmode module
+# Usage samples:
+# - recompile firewall+bridge user mode:
+#   fake pkg/firewall pkg/bridge pkg/main
+# - recompile firewall+bridge kernel mode:
+#   fake pkg/firewall pkg/bridge pkg/kernel
+# 
+#
+# recompilation is done at 'quite mode', which is faster. You may remove the -s 
+. ~/.bashrc
+cdr ()
+{
+    D=`jpwdroot` && cd $D/$*
+}
+FL=-s
+my_make=`which make`
+my_make=cake
+date > /tmp/fake_time.txt
+final_comp_flags=""
+# for UML - no need to recompile os. Some other platform may require it.
+cdr &&  grep "=UML" build/.configure && final_comp_flags=make_image
+for i in $*;
+do
+    cdr
+    # at pkg/build/make_ramdisk.sh we delete the home directory and replace it
+    # by link. This link has to be removed in order to enable recreation of the
+    # directory
+    if [ $(expr match "$i" "pkg/web_mng") -gt 0 ]
+    then
+    	rm -f build/pkg/build/disk_image/ramdisk_dir/home 2>/dev/null 
+        echo AAA
+    fi
+
+    # compile directory
+    cd $i && $my_make $FL  && $my_make $FL ramdisk
+    if [ "$?" -ne "0" ]
+    then
+        rt beep 2>/dev/null -f 1000 -n -f 700 -n -f 500
+        exit -1
+    fi
+done;
+cdr && cd pkg/build && $my_make $FL ramdisk && cdr && cd os && make $FL $final_comp_flags && cdr
+date >> /tmp/fake_time.txt
+cat /tmp/fake_time.txt
+exit 0

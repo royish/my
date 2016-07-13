@@ -1,0 +1,6 @@
+cd
+rt rm -rf $1
+cvs co -d $1 -r branch-4_$2 rg-dev
+cd $1
+cat ~/bin/config_list | xargs -l mkall
+

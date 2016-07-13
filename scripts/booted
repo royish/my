@@ -1,0 +1,31 @@
+#!/bin/sh -x
+
+#kbd
+
+#jnetwork restart
+xhost +
+#rt route add -net 192.168.72.0/24 gw wall
+#rt route add -net 10.71.0.0/16 gw wall
+#rt route add -net 192.168.71.0/24 gw wall
+#rt route add pop3 gw wall
+
+#rt modprobe -r pcspkr; rt modprobe pcspkr
+
+#@@@ temporary till sound is fixed
+#rt killall artsd
+
+#rt killall synergys
+rt synergys &
+
+#rt ifconfig eth1 192.168.1.10 &
+
+#kopete &
+#amarok &
+clementine &
+#icedove &
+#iceweasel &
+google-chrome &
+firefox &
+
+#rt ~/my/scripts/killer nepo &
+

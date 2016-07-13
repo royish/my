@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#sudo ifconfig eth0 down
+
+RG_GW=192.168.1.1
+OFFICE_GW=10.46.76.1
+
+
+if [ "$1" == "rg" ]; then
+    route del default gw $OFFICE_GW
+    route add default gw $RG_GW
+    route -n
+    exit
+else
+    route del default gw $RG_GW
+    route add default gw $OFFICE_GW
+    route -n
+    exit
+fi
+

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cd ~/project/db
+cvs up hardware.csv
+if [ 0 == $# ]; then
+	gvim -f hardware.csv
+else
+	gvim -f hardware.csv +/$1 
+fi
+
+diff=`cvs diff hardware.csv | wc -l`
+#echo $diff
+if [ $diff == 0 ]; then
+	exit	
+fi
+
+#echo Do you wish to commit changes to hardawre.csv ?
+cvs ci hardware.csv
+

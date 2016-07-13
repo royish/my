@@ -1,0 +1,10 @@
+#!/bin/bash
+
+write() {
+  echo $1 > /dev/ttyaa;
+  ret=$PIPESTATUS;
+  sleep 1;
+  return $ret;
+}
+
+write "conf set royi 1;conf reconf 1" && write "conf del royi;conf reconf 1"

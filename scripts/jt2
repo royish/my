@@ -1,0 +1,1 @@
+rt jtcpgen --wan eth2 --lan eth1 --bridge --dut-wan-ip 192.168.81.1 --base-port 5001 --mtu 1500 -t $1 --job --down -n $2

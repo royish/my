@@ -1,0 +1,5 @@
+#!/bin/bash
+
+bug=`echo $1 | sed -e 's%B\(.*\).*%\1%'`
+#firefox http://bugs.home.jungo.com/bugs/show_bug.cgi?id=$bug &
+google-chrome http://bugs.home.jungo.com/bugs/show_bug.cgi?id=$bug
